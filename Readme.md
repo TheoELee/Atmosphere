@@ -1,10 +1,10 @@
 # Intro
 
 ---
-Atmosphere is a web app that uses your local weather forecast to generate and play a unique Spotify playlist. This is accomplished by using a number of API'S, mainly: 
-    - [Spotify](https://developer.spotify.com/documentation/web-api/)
-    - [OpenWeatherMap](https://openweathermap.org/api)
-    - [ip-api](https://ip-api.com/)
+Atmosphere is a web app that uses your local weather forecast to generate and play a unique Spotify playlist. This is accomplished by using a number of API'S, mainly:  
+    - [Spotify](https://developer.spotify.com/documentation/web-api/)  
+    - [OpenWeatherMap](https://openweathermap.org/api)  
+    - [ip-api](https://ip-api.com/)  
 
 ## Get Started
 _Under construction_ 
