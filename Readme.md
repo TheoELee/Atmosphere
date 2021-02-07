@@ -7,5 +7,5 @@ Atmosphere is a web app that uses your local weather forecast to generate and pl
     - [ip-api](https://ip-api.com/)  
 
 ## Get Started
-_Under construction_ 
+_Under construction_  
 We should fill this out with the exact build instructions for someone to get started. What does the environment need to look like in order for someone to download our code, build and run the project? That kinda stuff
