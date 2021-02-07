@@ -1,0 +1,19 @@
+{
+  "name": "atmosphere",
+  "version": "0.0.0",
+  "description": "A web app that curates and plays a unique Spotify playlist based on the local weather forcast",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TheoELee/Atmosphere.git"
+  },
+  "author": "Theo Lee, Chris Anderson, Darika Batbayar",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/TheoELee/Atmosphere/issues"
+  },
+  "homepage": "https://github.com/TheoELee/Atmosphere#readme"
+}
