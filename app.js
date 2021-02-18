@@ -3,7 +3,6 @@ var request = require('request'); // "Request" library
 var cors = require('cors');
 var querystring = require('querystring');
 var cookieParser = require('cookie-parser');
-
 var client_id = '34be20e84d994353b68c15ff78924a54'; // Your client id
 var client_secret = '026ad523dd364eba9224f6a02fc31811'; // Your secret
 var redirect_uri = 'http://localhost:8888/callback'; // Your redirect uri
@@ -32,11 +31,10 @@ app.use(express.static(__dirname + '/public'))
    .use(cookieParser());
 
 app.get('/login', function(req, res) {
-
   var state = generateRandomString(16);
   res.cookie(stateKey, state);
 
-  // your application requests authorization
+  // Request authorization
   var scope = 'user-read-private user-read-email playlist-modify-public user-modify-playback-state user-read-currently-playing user-library-modify streaming';
   res.redirect('https://accounts.spotify.com/authorize?' +
     querystring.stringify({
@@ -46,7 +44,7 @@ app.get('/login', function(req, res) {
       redirect_uri: redirect_uri,
       state: state
     }));
-});
+ });
 
 app.get('/callback', function(req, res) {
 
@@ -94,14 +92,15 @@ app.get('/callback', function(req, res) {
           console.log(body);
         });
 
-        // we can also pass the token to the browser to make requests from there
-        res.redirect('/#' +
-          querystring.stringify({
-            access_token: access_token,
-            refresh_token: refresh_token
-          }));
+        // redirect to our main page
+      res.redirect('/main/#' +
+        querystring.stringify({
+          access_token: access_token,
+          refresh_token: refresh_token
+        }));
+
       } else {
-        res.redirect('/#' +
+        res.redirect('/main/#' +
           querystring.stringify({
             error: 'invalid_token'
           }));
@@ -109,6 +108,10 @@ app.get('/callback', function(req, res) {
     });
   }
 });
+
+app.get('/main', (req, res) => {
+  res.sendFile(__dirname + '/public/main.html');
+})
 
 app.get('/refresh_token', function(req, res) {
 
