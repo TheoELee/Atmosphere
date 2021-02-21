@@ -7,6 +7,8 @@ var cookieParser = require('cookie-parser');
 var client_id = '34be20e84d994353b68c15ff78924a54'; // Your client id
 var client_secret = '026ad523dd364eba9224f6a02fc31811'; // Your secret
 var redirect_uri = 'http://localhost:8888/callback'; // Your redirect uri
+const weatherKey = "e6d97c1a8a16bef9b8326ebac5e9d4ba"; //Free API key for Openweather
+const urlLocation = "http://ip-api.com/json/"; //URL for ip-api (ip location api)
 const port = 8888;
 
 /**
@@ -139,25 +141,34 @@ app.get('/refresh_token', function(req, res) {
   });
 });
 
-//start of location api
-//
-//http://ip-api.com/json/{query}
-//if you don't supply a query, current IP is used
-const url = "http://ip-api.com/json/"
+//******start of Location and Weather api************
+app.get('/test', (req, res) =>{
 
-
-const fetchData = () => {
-    fetch(url)
-      .then((request) => request.json())
-      .then((data) => {
-        console.log(data);
-      })
-      .catch((error) => console.log(error));
-  };
-
-fetchData();
-
-//end of location api
+    fetch(urlLocation)
+     .then((response) => {
+       //get data
+       return response.json();
+     })
+     .then((data) => {
+      //do something with data
+       var zip = data.zip;
+       console.log(data);
+       //make seconde promise/api call
+       const urlWeather = `http://api.openweathermap.org/data/2.5/weather?zip=${zip},&appid=${weatherKey}`;
+       return fetch(urlWeather);
+     })
+     .then((response) => {
+       //get second promise data
+       return response.json();
+     })
+     .then((data) => {
+       //do something with it
+     console.log(data);
+     res.send(data);
+     })
+     .catch((error) => console.log(error));
+     })
+//***** End of Location and Weather api************
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
