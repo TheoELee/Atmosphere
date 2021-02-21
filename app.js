@@ -1,11 +1,13 @@
 var express = require('express'); // Express web server framework
 var request = require('request'); // "Request" library
+var fetch = require("node-fetch"); // To allows fetching api's
 var cors = require('cors');
 var querystring = require('querystring');
 var cookieParser = require('cookie-parser');
 var client_id = '34be20e84d994353b68c15ff78924a54'; // Your client id
 var client_secret = '026ad523dd364eba9224f6a02fc31811'; // Your secret
 var redirect_uri = 'http://localhost:8888/callback'; // Your redirect uri
+const port = 8888;
 
 /**
  * Generates a random string containing numbers and letters
@@ -137,5 +139,26 @@ app.get('/refresh_token', function(req, res) {
   });
 });
 
-console.log('Listening on 8888');
-app.listen(8888);
+//start of location api
+//
+//http://ip-api.com/json/{query}
+//if you don't supply a query, current IP is used
+const url = "http://ip-api.com/json/"
+
+
+const fetchData = () => {
+    fetch(url)
+      .then((request) => request.json())
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => console.log(error));
+  };
+
+fetchData();
+
+//end of location api
+
+app.listen(port, () => {
+  console.log(`Server running at http://localhost:${port}`);
+})
