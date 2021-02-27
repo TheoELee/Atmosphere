@@ -1,0 +1,26 @@
+var express = require('express');
+var path = require('path');
+var cookieParser = require('cookie-parser');
+var cors = require('cors');
+var cookieParser = require('cookie-parser');
+
+var app = express();
+
+// Routes
+var indexRouter = require('./routes/index');
+var loginRouter = require('./routes/login');
+var callbackRouter = require('./routes/callback');
+var mainRouter = require('./routes/main');
+
+app.use(express.json())
+   .use(express.urlencoded({ extended: false }))
+   .use(cookieParser())
+   .use(cors())
+   .use(express.static(path.join(__dirname, 'public')));
+
+app.use('/', indexRouter);
+app.use('/login', loginRouter);
+app.use('/callback', callbackRouter);
+app.use('/main', mainRouter);
+
+module.exports = app;
