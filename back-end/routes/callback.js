@@ -1,4 +1,5 @@
 var express = require('express');
+const { access } = require('fs');
 var router = express.Router();
 var querystring = require('querystring');
 var client_id = '34be20e84d994353b68c15ff78924a54'; // Your client id
@@ -6,6 +7,7 @@ var client_secret = '026ad523dd364eba9224f6a02fc31811'; // Your secret
 var redirect_uri = 'http://localhost:8888/callback'; // Your redirect uri
 var request = require('request'); // "Request" library
 var stateKey = 'spotify_auth_state';
+var createPlaylist = require('../public/createPlaylist');
 
 router.get('/', function(req, res) {
   // your application requests refresh and access tokens
@@ -49,6 +51,7 @@ router.get('/', function(req, res) {
 
         // use the access token to access the Spotify Web API
         request.get(options, function(error, response, body) {
+          createPlaylist.getWeatherData(access_token);
           console.log(body);
         });
 
