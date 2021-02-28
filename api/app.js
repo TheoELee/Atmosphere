@@ -11,6 +11,7 @@ var indexRouter = require('./routes/index');
 var loginRouter = require('./routes/login');
 var callbackRouter = require('./routes/callback');
 var mainRouter = require('./routes/main');
+console.log("\nhttp://localhost:8888\n");
 
 app.use(express.json())
    .use(express.urlencoded({ extended: false }))
