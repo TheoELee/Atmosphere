@@ -20,7 +20,7 @@ router.get("/", (req, res) => {
     fetch(url)
       .then((request) => request.json())
       .then((data) => {
-        console.log(data);
+//        console.log(data);
       })
       .catch((error) => console.log(error));
   };
@@ -50,6 +50,7 @@ router.get("/", (req, res) => {
       const weatherType = data.weather[0].description;
       console.log("Weather Description: " + weatherType);
 
+      //Converted from Kelvin to Farenheit
       const kTemp = data.main.temp;
       let fTemp = ((kTemp - 273.15) * 9) / 5 + 32;
       var temp = fTemp.toFixed(2);
@@ -60,8 +61,8 @@ router.get("/", (req, res) => {
         console.log("Wind Speed(m/s): " + wind);
       }
 
+      //Added Sun coverage: 100 - Cloud Coverage
       let sun = 100;
-
       if (data.clouds) {
         const clouds = data.clouds.all;
         console.log("% Cloudiness: " + clouds);
@@ -72,17 +73,19 @@ router.get("/", (req, res) => {
         console.log("% Sunshine: " + sun);
       }
 
+      //Needs testing
       if (data.rain) {
         const rain = data.rain["3h"];
         console.log("Rain Vol in 3 hr(mm): " + rain);
       }
 
+      //Needs testing
       if (data.snow) {
         const snow = data.snow["3h"];
         console.log("Snow fall in 3 hr(mm): " + snow);
       }
 
-      //test
+      //**** Start of Creating a Playlist */
       var code = req.query.code || null;
       var state = req.query.state || null;
       var storedState = req.cookies ? req.cookies[stateKey] : null;
@@ -128,9 +131,9 @@ router.get("/", (req, res) => {
 
         });
       }
-      //test
+      //**** Start of Creating a Playlist */
 
-      //res.sendFile(path.resolve("public/main.html"));
+      res.sendFile(path.resolve("public/main.html"));
     })
     .catch((error) => console.log(error));
 
