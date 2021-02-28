@@ -5,6 +5,7 @@ var cors = require('cors');
 var cookieParser = require('cookie-parser');
 
 var app = express();
+var clientPath = path.join(__dirname + '/../front-end/build/');
 
 // Routes
 var indexRouter = require('./routes/index');
@@ -17,7 +18,7 @@ app.use(express.json())
    .use(express.urlencoded({ extended: false }))
    .use(cookieParser())
    .use(cors())
-   .use(express.static(path.join(__dirname, 'public')));
+   .use(express.static(clientPath));
 
 app.use('/', indexRouter);
 app.use('/login', loginRouter);
