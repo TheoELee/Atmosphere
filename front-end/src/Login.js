@@ -19,7 +19,7 @@ class Login extends Component {
 
   render() {
     return (
-    <div className="container">
+    <div className="containerLogin">
       <div id="login">
         <h1 className="text-uppercase">Atmosphere</h1>
         <p>Atmosphere is an app that uses your local weather forecast to generate and play unique Spotify playlist. (She
