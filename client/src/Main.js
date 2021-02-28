@@ -1,12 +1,12 @@
-import './Login.css';
+import Weather from './Weather';
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Button from 'react-bootstrap/Button';
+import Navbar from 'react-bootstrap/Navbar';
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 
 class Main extends Component {
-//   constructor(props) {
-//     super(props);
-//   }
 
  getHashParams() {
     var hashParams = {};
@@ -19,11 +19,30 @@ class Main extends Component {
   }
 
   render() {
+    const params = this.getHashParams()
     return (
     <div> 
-        <h1>This is the Main Page. We can delete all of this, this was just template stuff to make sure things were redirection properly. But this should be where the main webplayer is and all that</h1>
-        <p onLoad={this.getHashParams()}>There's a button here?</p>
-        <Button variant="primary">Primary</Button>{' '}
+      <Navbar>
+        <Navbar.Text>ZIP CODE</Navbar.Text>
+        <Navbar.Toggle />
+        <Navbar.Collapse className="justify-content-end">
+          <Navbar.Text>
+            Signed in as: <a href="#login">{params.test}</a>
+          </Navbar.Text>
+        </Navbar.Collapse>
+      </Navbar>
+      <Container fluid>
+        <Row>
+          <Col>
+            <Weather />
+          </Col>
+          <Col>
+            <div>
+              <p>Playlist</p>
+            </div>
+          </Col>
+        </Row>
+      </Container>
     </div>
     )
   }
