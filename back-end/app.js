@@ -5,7 +5,7 @@ var cors = require('cors');
 var cookieParser = require('cookie-parser');
 
 var app = express();
-var clientPath = path.join(__dirname + '/../client/build/');
+var clientPath = path.join(__dirname + '/../front-end/build/');
 
 // Routes
 var indexRouter = require('./routes/index');
