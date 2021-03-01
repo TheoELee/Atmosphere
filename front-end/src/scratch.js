@@ -1,3 +1,36 @@
+// 📝 Fetch all DOM nodes in jQuery and Snap SVG
+
+var container = $('.container');
+var card = $('#card');
+var innerSVG = Snap('#inner');
+var outerSVG = Snap('#outer');
+var backSVG = Snap('#back');
+var summary = $('#summary');
+var date = $('#date');
+var weatherContainer1 = Snap.select('#layer1');
+var weatherContainer2 = Snap.select('#layer2');
+var weatherContainer3 = Snap.select('#layer3');
+var innerRainHolder1 = weatherContainer1.group();
+var innerRainHolder2 = weatherContainer2.group();
+var innerRainHolder3 = weatherContainer3.group();
+var innerLeafHolder = weatherContainer1.group();
+var innerSnowHolder = weatherContainer1.group();
+var innerLightningHolder = weatherContainer1.group();
+var leafMask = outerSVG.rect();
+var leaf = Snap.select('#leaf');
+var sun = Snap.select('#sun');
+var sunburst = Snap.select('#sunburst');
+var outerSplashHolder = outerSVG.group();
+var outerLeafHolder = outerSVG.group();
+var outerSnowHolder = outerSVG.group();
+
+var lightningTimeout;
+
+// Set mask for leaf holder 
+
+outerLeafHolder.attr({
+	'clip-path': leafMask
+});
 
 // create sizes object, we update this later
 
@@ -403,7 +436,8 @@ function onSnowEnd(flake)
 	}
 }
 
-function tick()
+function 
+()
 {
 	tickCount++;
 	var check = tickCount % settings.renewCheck;
@@ -431,7 +465,10 @@ function tick()
 		}
 	}
 	
-	requestAnimationFrame(tick);
+	requestAnimationFrame(
+	
+	
+	);
 }
 
 function reset()
