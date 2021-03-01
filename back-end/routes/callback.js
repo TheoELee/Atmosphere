@@ -1,4 +1,5 @@
 var express = require('express');
+const axios = require("axios");
 const { access } = require('fs');
 var router = express.Router();
 var querystring = require('querystring');
@@ -39,22 +40,27 @@ router.get('/', function(req, res) {
 
     request.post(authOptions, async function(error, response, body) {
       if (!error && response.statusCode === 200) {
-
         var access_token = body.access_token,
             refresh_token = body.refresh_token;
 
-        var options = {
-          url: 'https://api.spotify.com/v1/me',
+        var url = 'https://api.spotify.com/v1/me';
+        var config = {
           headers: { 'Authorization': 'Bearer ' + access_token },
           json: true
         };
 
+        console.log("first body")
+        console.log(body);
+
         // use the access token to access the Spotify Web API
-        request.get(options, function(error, response, body) {
-          console.log(access_token);
-//          createPlaylist.getWeatherData(access_token);
-          //console.log(body);
-        });
+//         request.get(options, function(error, response, body) {
+//           // console.log(access_token);
+// //          createPlaylist.getWeatherData(access_token);
+//           console.log(body);
+//         });
+
+        var user = await axios.get(url, config)
+        // console.log(user.data.display_name)
 
         let zipCode = await createPlaylist.getZip();
 
@@ -62,8 +68,8 @@ router.get('/', function(req, res) {
         // redirect to our main page
       res.redirect('/main/#' +
         querystring.stringify({
-          access_token: access_token,
-          refresh_token: refresh_token
+          zipCode: zipCode,
+          displayName: user.data.display_name
         }));
 
       } else {
