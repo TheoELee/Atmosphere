@@ -12,89 +12,64 @@ module.exports = {
     return response.data.zip;
   },
 
-  getWeatherData: function (access_token) {
-    //******start of Location and Weather api************
-    console.log(access_token);
+  getWeather: async function (zipCode){
+   const urlWeather = `http://api.openweathermap.org/data/2.5/weather?zip=${zipCode},&appid=${weatherKey}`;
+   let response = await axios.get(urlWeather);
+   return response.data;
+  },
 
-  const url = "http://ip-api.com/json/";
-
-  const fetchData = () => {
-    fetch(url)
-      .then((request) => request.json())
-      .then((data) => {
-//        console.log(data);
-      })
-      .catch((error) => console.log(error));
-  };
-
-      fetchData();
-
-    fetch(urlLocation)
-      .then((response) => {
-        //get data
-        return response.json();
-      })
-      .then((data) => {
-        //do something with data
-        var zip = data.zip;
-        //console.log(data);
-        //make seconde promise/api call
-        const urlWeather = `http://api.openweathermap.org/data/2.5/weather?zip=${zip},&appid=${weatherKey}`;
-        return fetch(urlWeather);
-      })
-      .then((response) => {
-        //get second promise data
-        return response.json();
-      })
-      .then((data) => {
-        //do something with it
+  parseWeatherData: async function (data){
 
         const weatherType = data.weather[0].description;
-        console.log("Weather Description: " + weatherType);
 
-        //Converted from Kelvin to Farenheit
+        //converting from kelvin to Farenheit
         const kTemp = data.main.temp;
         let fTemp = ((kTemp - 273.15) * 9) / 5 + 32;
         var temp = fTemp.toFixed(2);
-        console.log("Temp: " + temp);
 
-        if (data.wind) {
-          const wind = data.wind.speed;
-          console.log("Wind Speed(m/s): " + wind);
-        }
+        let wind = 0;
+        if (data.wind)
+          wind = data.wind.speed;
 
-        //Added Sun coverage: 100 - Cloud Coverage
+        //Clouds are in % coverage
+        //Added Sun coverage %: 100 - Cloud Coverage
         let sun = 100;
+        let clouds  = 0;
         if (data.clouds) {
-          const clouds = data.clouds.all;
-          console.log("% Cloudiness: " + clouds);
-
+          clouds = data.clouds.all;
           sun = 100 - clouds;
-          console.log("% Sunshine: " + sun);
-        } else {
-          console.log("% Sunshine: " + sun);
         }
 
         //Needs testing
-        if (data.rain) {
-          const rain = data.rain["3h"];
-          console.log("Rain Vol in 3 hr(mm): " + rain);
-        }
+        //Snow measure in milimeters over 3 hour period
+        let rain = 0;
+        if (data.rain)
+          rain = data.rain["3h"];
 
         //Needs testing
-        if (data.snow) {
-          const snow = data.snow["3h"];
-          console.log("Snow fall in 3 hr(mm): " + snow);
-        }
+        //Snow measure in milimeters over 3 hour period
+        let snow = 0;
+        if (data.snow)
+          snow = data.snow["3h"];
 
-        //**** Start of Creating a Playlist */
+        var text = '{"weatherData":[' +
+        `{"description": "${weatherType}"},` +
+        `{"temp": "${temp}"},` +
+        `{"wind": "${wind}"},` +
+        `{"clouds": "${clouds}"},` +
+        `{"sun": "${sun}"},` +
+        `{"rain": "${rain}"},` +
+        `{"snow": "${snow}"}]}`;
 
-        //**** End of Creating a Playlist */
-      })
-      .catch((error) => console.log(error));
+        weatherData = JSON.parse(text);
+
+        return weatherData;
+  },
+
+  makePlayist: function (access_token, obj) {
+    //******start of Location and Weather api************
+    console.log(access_token);
 
     //***** End of Location and Weather api************
   },
 };
-
-//module.exports = router;

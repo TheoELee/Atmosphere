@@ -1,16 +1,16 @@
-var express = require('express');
+var express = require("express");
 const axios = require("axios");
-const { access } = require('fs');
+const { access } = require("fs");
 var router = express.Router();
-var querystring = require('querystring');
-var client_id = '34be20e84d994353b68c15ff78924a54'; // Your client id
-var client_secret = '026ad523dd364eba9224f6a02fc31811'; // Your secret
-var redirect_uri = 'http://localhost:8888/callback'; // Your redirect uri
-var request = require('request'); // "Request" library
-var stateKey = 'spotify_auth_state';
-var createPlaylist = require('../public/createPlaylist');
+var querystring = require("querystring");
+var client_id = "34be20e84d994353b68c15ff78924a54"; // Your client id
+var client_secret = "026ad523dd364eba9224f6a02fc31811"; // Your secret
+var redirect_uri = "http://localhost:8888/callback"; // Your redirect uri
+var request = require("request"); // "Request" library
+var stateKey = "spotify_auth_state";
+var createPlaylist = require("../public/createPlaylist");
 
-router.get('/', function(req, res) {
+router.get("/", function (req, res) {
   // your application requests refresh and access tokens
   // after checking the state parameter
 
@@ -19,64 +19,77 @@ router.get('/', function(req, res) {
   var storedState = req.cookies ? req.cookies[stateKey] : null;
 
   if (state === null || state !== storedState) {
-    res.redirect('/#' +
-      querystring.stringify({
-        error: 'state_mismatch'
-      }));
+    res.redirect(
+      "/#" +
+        querystring.stringify({
+          error: "state_mismatch",
+        })
+    );
   } else {
     res.clearCookie(stateKey);
     var authOptions = {
-      url: 'https://accounts.spotify.com/api/token',
+      url: "https://accounts.spotify.com/api/token",
       form: {
         code: code,
         redirect_uri: redirect_uri,
-        grant_type: 'authorization_code'
+        grant_type: "authorization_code",
       },
       headers: {
-        'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64'))
+        Authorization:
+          "Basic " +
+          new Buffer(client_id + ":" + client_secret).toString("base64"),
       },
-      json: true
+      json: true,
     };
 
-    request.post(authOptions, async function(error, response, body) {
+    request.post(authOptions, async function (error, response, body) {
       if (!error && response.statusCode === 200) {
         var access_token = body.access_token,
-            refresh_token = body.refresh_token;
+          refresh_token = body.refresh_token;
 
-        var url = 'https://api.spotify.com/v1/me';
+        var url = "https://api.spotify.com/v1/me";
         var config = {
-          headers: { 'Authorization': 'Bearer ' + access_token },
-          json: true
+          headers: { Authorization: "Bearer " + access_token },
+          json: true,
         };
 
-        console.log("first body")
+        console.log("first body");
         console.log(body);
 
-        // use the access token to access the Spotify Web API
-//         request.get(options, function(error, response, body) {
-//           // console.log(access_token);
-// //          createPlaylist.getWeatherData(access_token);
-//           console.log(body);
-//         });
-
-        var user = await axios.get(url, config)
+        var user = await axios.get(url, config);
         // console.log(user.data.display_name)
 
+        //get the zipCode for the weather api
         let zipCode = await createPlaylist.getZip();
+//        console.log("Zipcode from function is " + zipCode);
 
-        console.log("Zipcode from function is " + zipCode);
+        //use the zipcode to get the weather Data
+        let weather = await createPlaylist.getWeather(zipCode);
+ //       console.log(weather);
+
+        let parsedWeather = await createPlaylist.parseWeatherData(weather);
+  //      console.log(parsedWeather);
+
+        // use the access token to access the Spotify Web API
+        // console.log(access_token);
+        let flag = createPlaylist.makePlayist(access_token, parsedWeather);
+   //     console.log(flag);
+
         // redirect to our main page
-      res.redirect('/main/#' +
-        querystring.stringify({
-          zipCode: zipCode,
-          displayName: user.data.display_name
-        }));
-
+        res.redirect(
+          "/main/#" +
+            querystring.stringify({
+              zipCode: zipCode,
+              displayName: user.data.display_name,
+            })
+        );
       } else {
-        res.redirect('/main/#' +
-          querystring.stringify({
-            error: 'invalid_token'
-          }));
+        res.redirect(
+          "/main/#" +
+            querystring.stringify({
+              error: "invalid_token",
+            })
+        );
       }
     });
   }
