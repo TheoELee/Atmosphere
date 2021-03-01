@@ -35,6 +35,7 @@ class Main extends Component {
           </Navbar.Text>
         </Navbar.Collapse>
       </Navbar>
+      <hr></hr>
       <Container fluid>
         <Row>
           <Col>
