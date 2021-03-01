@@ -1,4 +1,5 @@
 import Weather from './Weather';
+import './Login.css';
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Navbar from 'react-bootstrap/Navbar';
@@ -7,6 +8,9 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 
 class Main extends Component {
+  // constructor(props) {
+  //   super(props);
+  // }
 
  getHashParams() {
     var hashParams = {};
@@ -23,11 +27,11 @@ class Main extends Component {
     return (
     <div> 
       <Navbar>
-        <Navbar.Text>ZIP CODE</Navbar.Text>
+        <Navbar.Text>{params.zipCode}</Navbar.Text>
         <Navbar.Toggle />
         <Navbar.Collapse className="justify-content-end">
           <Navbar.Text>
-            Signed in as: <a href="#login">{params.test}</a>
+            {params.displayName} <i className="fab fa-spotify fa-lg"></i>
           </Navbar.Text>
         </Navbar.Collapse>
       </Navbar>
