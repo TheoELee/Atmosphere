@@ -37,7 +37,7 @@ router.get('/', function(req, res) {
       json: true
     };
 
-    request.post(authOptions, function(error, response, body) {
+    request.post(authOptions, async function(error, response, body) {
       if (!error && response.statusCode === 200) {
 
         var access_token = body.access_token,
@@ -51,10 +51,14 @@ router.get('/', function(req, res) {
 
         // use the access token to access the Spotify Web API
         request.get(options, function(error, response, body) {
-          createPlaylist.getWeatherData(access_token);
-          console.log(body);
+          console.log(access_token);
+//          createPlaylist.getWeatherData(access_token);
+          //console.log(body);
         });
 
+        let zipCode = await createPlaylist.getZip();
+
+        console.log("Zipcode from function is " + zipCode);
         // redirect to our main page
       res.redirect('/main/#' +
         querystring.stringify({
