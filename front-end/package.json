@@ -8,6 +8,8 @@
     "@testing-library/user-event": "^12.7.3",
     "bootstrap": "^4.6.0",
     "gsap": "^3.6.0",
+    "i": "^0.3.6",
+    "jquery": "^3.5.1",
     "react": "^17.0.1",
     "react-bootstrap": "^1.5.0",
     "react-dom": "^17.0.1",
@@ -15,7 +17,7 @@
     "react-scripts": "^4.0.3",
     "sass": "^1.32.8",
     "snapsvg": "^0.5.1",
-    "snapsvg-cjs": "^0.0.6",
+    "snapsvg-cjs": "0.0.6",
     "web-vitals": "^1.1.0"
   },
   "scripts": {
