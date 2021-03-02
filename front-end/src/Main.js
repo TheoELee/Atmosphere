@@ -1,5 +1,6 @@
 // import Weather from './Weather';
 import Snow from './Snow';
+import Rain from './Rain';
 import './Login.css';
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -17,7 +18,7 @@ class Main extends Component {
     var hashParams = {};
     var e, r = /([^&;=]+)=?([^&;]*)/g,
     q = window.location.hash.substring(1);
-    while (e = r.exec(q)) {
+    while (e === r.exec(q)) {
       hashParams[e[1]] = decodeURIComponent(e[2]);
     }
     return hashParams;
@@ -41,7 +42,8 @@ class Main extends Component {
         <Row>
           <Col>
             {/* <Weather /> */}
-            <Snow />
+            {/* <Snow /> */}
+            <Rain />
           </Col>
           <Col>
             <div>
