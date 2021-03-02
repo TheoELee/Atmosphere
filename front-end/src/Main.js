@@ -1,4 +1,5 @@
-import Weather from './Weather';
+// import Weather from './Weather';
+import Snow from './Snow';
 import './Login.css';
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -39,7 +40,8 @@ class Main extends Component {
       <Container fluid>
         <Row>
           <Col>
-            <Weather />
+            {/* <Weather /> */}
+            <Snow />
           </Col>
           <Col>
             <div>
