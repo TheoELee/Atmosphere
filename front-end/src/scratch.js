@@ -377,64 +377,6 @@ function onLeafEnd(leaf)
 	}
 }
 
-function makeSnow()
-{
-	var scale = 0.5 + (Math.random() * 0.5);
-	var newSnow;
-	
-	var x = 20 + (Math.random() * (sizes.card.width - 40));
-	var endX; // = x - ((Math.random() * (areaX * 2)) - areaX)
-	var y = -10;
-	var endY;
-	
-	if(scale > 0.8)
-	{
-		newSnow = outerSnowHolder.circle(0, 0, 5)
-			.attr({
-				fill: 'white'
-			})
-		endY = sizes.container.height + 10;
-		y = sizes.card.offset.top + settings.cloudHeight;
-		x =  x + sizes.card.offset.left;
-		//xBezier = x + (sizes.container.width - sizes.card.offset.left) / 2;
-		//endX = sizes.container.width + 50;
-	}
-	else 
-	{
-		newSnow = innerSnowHolder.circle(0, 0 ,5)
-		.attr({
-			fill: 'white'
-		})
-		endY = sizes.card.height + 10;
-		//x = -100;
-		//xBezier = sizes.card.width / 2;
-		//endX = sizes.card.width + 50;
-		
-	}
-	
-	snow.push(newSnow);
-	 
-	
-	TweenMax.fromTo(newSnow.node, 3 + (Math.random() * 5), {x: x, y: y}, {y: endY, onComplete: onSnowEnd, onCompleteParams: [newSnow], ease: Power0.easeIn})
-	TweenMax.fromTo(newSnow.node, 1,{scale: 0}, {scale: scale, ease: Power1.easeInOut})
-	TweenMax.to(newSnow.node, 3, {x: x+((Math.random() * 150)-75), repeat: -1, yoyo: true, ease: Power1.easeInOut})
-}
-
-function onSnowEnd(flake)
-{
-	flake.remove();
-	flake = null;
-	
-	for(var i in snow)
-	{
-		if(!snow[i].paper) snow.splice(i, 1);
-	}
-	
-	if(snow.length < settings.snowCount)
-	{
-		makeSnow();
-	}
-}
 
 function 
 ()

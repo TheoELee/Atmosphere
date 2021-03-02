@@ -1,8 +1,7 @@
-import './weather.scss';
 import React, { Component } from 'react';
 import Snap from "snapsvg-cjs";
 import $ from "jquery";
-import { TweenMax, Power0, Power1, Power2, Power4 } from "gsap"
+import { gsap, Power0, Power2, Power4 } from "gsap"
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 // 📝 Fetch all DOM nodes in jQuery and Snap SVG
@@ -12,10 +11,13 @@ var innerSVG;
 var outerSVG;
 var summary;
 var weatherContainer;
-var innerSnowHolder;
-var outerSnowHolder;
+var innerLeafHolder;
+var leafMask;
+var leaf;
+var outerLeafHolder;
 // var date = $('#date');
 
+// create sizes object, we update this later
 var sizes = {
     container: {width: 0, height: 0},
     card: {width: 0, height: 0}
@@ -24,11 +26,11 @@ var sizes = {
 // grab cloud groups
 var clouds;
 
-// app settings
+// 🛠 app settings
 // in an object so the values can be animated in tweenmax
-const settings = {
+var settings = {
     windSpeed: 2,
-    snowCount: 0,
+    leafCount: 0,
     cloudHeight: 100,
     cloudSpace: 30,
     cloudArch: 50,
@@ -36,31 +38,27 @@ const settings = {
 };
 
 var tickCount = 0;
-var snow = [];
+var leafs = [];
 
-class Snow extends Component {
+class Wind extends Component {
     // constructor(props) {
     //     super(props);
     // }
     
     weatherAnimations() {
-        // I can probably throw this in a componenetDidUpdate right?
         this.onResize();
-
+        
         // draw clouds
         for(let i = 0; i < clouds.length; i++) {
             clouds[i].offset = Math.random() * sizes.card.width;
             this.drawCloud(clouds[i], i);
         }
         
-        TweenMax.killTweensOf(summary);
-        TweenMax.to(summary, 1, {opacity: 0, x: -30, onComplete: this.updateSummaryText, ease: Power4.easeIn})
-        // TweenMax.duration(summary, 1, {opacity: 0, x: -30, onComplete: this.updateSummaryText, ease: Power4.easeIn})
+        gsap.killTweensOf(summary);
+        gsap.to(summary, 1, {opacity: 0, x: -30, onComplete: this.updateSummaryText, ease: Power4.easeIn})
         
-        container.addClass('snow');
-
-        // snowCount
-        TweenMax.to(settings, 3, {snowCount: 40, ease: Power2.easeInOut});
+        gsap.to(settings, 3, {windSpeed: 3, ease: Power2.easeInOut});
+        gsap.to(settings, 3, {leafCount: 5, ease: Power2.easeInOut});
 
         // 🏃 start animations
         requestAnimationFrame(this.tick);
@@ -71,8 +69,8 @@ class Snow extends Component {
         var check = tickCount % settings.renewCheck;
         
         if(check) {
-            if(snow.length < settings.snowCount) {
-                this.makeSnow();
+            if(leafs.length < settings.leafCount) {
+                this.makeLeaf();
             }
         }
         
@@ -85,7 +83,7 @@ class Snow extends Component {
         requestAnimationFrame(this.tick);
     }
 
-    onResize = () => {
+    onResize() {
         // 📏 grab window and card sizes 
         sizes.container.width = container.width();
         sizes.container.height = container.height();
@@ -103,10 +101,14 @@ class Snow extends Component {
             width: sizes.container.width,
             height: sizes.container.height
         })	
+        
+        // 🍃 The leaf mask is for the leafs that float out of the
+        // container, it is full window height and starts on the left
+        // inline with the card
+        leafMask.attr({x: sizes.card.offset.left, y: 0, width: sizes.container.width - sizes.card.offset.left,  height: sizes.container.height});
     }
 
-    drawCloud(cloud, i)
-    {
+    drawCloud(cloud, i) {
         /* 
         ☁️ We want to create a shape thats loopable but that can also
         be animated in and out. So we use Snap SVG to draw a shape
@@ -133,76 +135,83 @@ class Snow extends Component {
         points.push([-(width), 0].join(','));
         
         var path = points.join(' ');
-
-        if(!cloud.path) {
-            cloud.path = cloud.group.path();
-        }
-
+        if(!cloud.path) cloud.path = cloud.group.path();
         cloud.path.animate({
             d: path
         }, 0)
     }
 
-    makeSnow() {
+    makeLeaf() {
         var scale = 0.5 + (Math.random() * 0.5);
-        var newSnow;
+        var newLeaf;
+        var areaY = sizes.card.height/2;
+        var y = areaY + (Math.random() * areaY);
+        var endY = y - ((Math.random() * (areaY * 2)) - areaY)
+        var x;
+        var endX;
+        var colors = ['#76993E', '#4A5E23', '#6D632F'];
+        var color = colors[Math.floor(Math.random() * colors.length)];
+        var xBezier;
         
-        var x = 20 + (Math.random() * (sizes.card.width - 40));
-        // var endX; // = x - ((Math.random() * (areaX * 2)) - areaX)
-        var y = -10;
-        var endY;
-        
-        if(scale > 0.8)
-        {
-            newSnow = outerSnowHolder.circle(0, 0, 5)
-                .attr({
-                    fill: 'white'
-                })
-            endY = sizes.container.height + 10;
-            y = sizes.card.offset.top + settings.cloudHeight;
-            x =  x + sizes.card.offset.left;
-            //xBezier = x + (sizes.container.width - sizes.card.offset.left) / 2;
-            //endX = sizes.container.width + 50;
-        }
-        else 
-        {
-            newSnow = innerSnowHolder.circle(0, 0 ,5)
+        if(scale > 0.8) {
+            newLeaf = leaf.clone().appendTo(outerLeafHolder)
             .attr({
-                fill: 'white'
+                fill: color
             })
-            endY = sizes.card.height + 10;
-            //x = -100;
-            //xBezier = sizes.card.width / 2;
-            //endX = sizes.card.width + 50;
+            y = y + sizes.card.offset.top / 2;
+            endY = endY + sizes.card.offset.top / 2;
+            
+            x = sizes.card.offset.left - 100;
+            xBezier = x + (sizes.container.width - sizes.card.offset.left) / 2;
+            endX = sizes.container.width + 50;
+        }
+        else {
+            newLeaf = leaf.clone().appendTo(innerLeafHolder)
+            .attr({
+                fill: color
+            })
+            x = -100;
+            xBezier = sizes.card.width / 2;
+            endX = sizes.card.width + 50;
             
         }
         
-        snow.push(newSnow);
+        leafs.push(newLeaf);
         
-        TweenMax.fromTo(newSnow.node, 3 + (Math.random() * 5), {x: x, y: y}, {y: endY, onComplete: this.onSnowEnd, onCompleteParams: [newSnow], ease: Power0.easeIn})
-        TweenMax.fromTo(newSnow.node, 1,{scale: 0}, {scale: scale, ease: Power1.easeInOut})
-        TweenMax.to(newSnow.node, 3, {x: x+((Math.random() * 150)-75), repeat: -1, yoyo: true, ease: Power1.easeInOut})
+        // let bezier = [{x:x, y:y}, {x: xBezier, y:(Math.random() * endY) + (endY / 3)}, {x: endX, y:endY}]
+        gsap.fromTo(newLeaf.node, 2, {
+            rotation: Math.random() * 180, 
+            x: x, 
+            y: y, 
+            scale:scale
+        }, {
+            rotation: Math.random() * 360, 
+            x: 700,
+            y: 200,
+            onComplete: this.onLeafEnd, 
+            onCompleteParams: [newLeaf], 
+            ease: Power0.easeIn
+        })
     }
 
-    onSnowEnd = (flake) => {
-        flake.remove();
-        flake = null;
+    onLeafEnd = (leaf) => {
+        leaf.remove();
+        leaf = null;
         
-        for(let i in snow)
-        {
-            if(!snow[i].paper) snow.splice(i, 1);
+        for(let i in leafs) {
+            if(!leafs[i].paper) {
+                leafs.splice(i, 1);
+            }
         }
         
-        if(snow.length < settings.snowCount)
-        {
-            this.makeSnow();
+        if(leafs.length < settings.leafCount) {
+          this.makeLeaf();
         }
     }
-
 
     updateSummaryText() {
-        summary.html("Snow");
-        TweenMax.fromTo(summary, 1.5, {x: 30}, {opacity: 1, x: 0, ease: Power4.easeOut});
+        summary.html('Windy');
+        gsap.fromTo(summary, 1.5, {x: 30}, {opacity: 1, x: 0, ease: Power4.easeOut});
     }
 
     componentDidMount() {
@@ -213,6 +222,8 @@ class Snow extends Component {
         summary = $('#summary');
         container = $('.container');
         card = $('#card');           
+        leaf = Snap.select('#leaf');
+        leafMask = outerSVG.rect();
 
         // Grab cloud groups
         clouds = [
@@ -221,9 +232,14 @@ class Snow extends Component {
             {group: Snap.select('#cloud3')}
         ]
 
-        // Snow
-        outerSnowHolder = outerSVG.group();
-        innerSnowHolder = weatherContainer.group();
+        // Windy
+        outerLeafHolder = outerSVG.group();
+        innerLeafHolder = weatherContainer.group();
+
+        // Set mask for leaf holder 
+        outerLeafHolder.attr({
+            'clip-path': leafMask
+        });
 
         this.weatherAnimations();
     }
@@ -234,6 +250,9 @@ class Snow extends Component {
                 <div className="container">	
                     <div id="card" className="weather">
                         <svg id="inner">
+                            <defs>
+                                <path id="leaf" d="M41.9,56.3l0.1-2.5c0,0,4.6-1.2,5.6-2.2c1-1,3.6-13,12-15.6c9.7-3.1,19.9-2,26.1-2.1c2.7,0-10,23.9-20.5,25 c-7.5,0.8-17.2-5.1-17.2-5.1L41.9,56.3z"/>
+                            </defs>
                             <g id="layer3"></g>
                             <g id="cloud3" className="cloud"></g>
                             <g id="layer2"></g>
@@ -256,4 +275,4 @@ class Snow extends Component {
     }
 }
 
-export default Snow;
+export default Wind;
