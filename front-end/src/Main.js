@@ -6,6 +6,10 @@ import './Login.css';
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Navbar from 'react-bootstrap/Navbar';
+// import Button from 'react-bootstrap/Button';
+// import Form from 'react-bootstrap/Form';
+// import FormControl from 'react-bootstrap/FormControl';
+import Search from './Search';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -28,17 +32,21 @@ class Main extends Component {
   render() {
     const params = this.getHashParams()
     return (
-    <div> 
+    <div>
+      <div style={{
+        borderBottom: "2px solid pink",
+        marginBottom: 20
+      }}>
       <Navbar>
         <Navbar.Text>{params.zipCode}</Navbar.Text>
         <Navbar.Toggle />
-        <Navbar.Collapse className="justify-content-end">
+        <Navbar.Collapse className="justify-content-end" >
           <Navbar.Text>
             {params.displayName} <i className="fab fa-spotify fa-lg"></i>
           </Navbar.Text>
         </Navbar.Collapse>
       </Navbar>
-      <hr></hr>
+      </div>
       <Container fluid>
         <Row>
           <Col>
@@ -49,7 +57,12 @@ class Main extends Component {
           </Col>
           <Col>
             <div>
-              <p>Playlist</p>
+              {/* <p>Playlist</p> */}
+              {/* <Form inline>
+                <FormControl type="text" placeholder="Search" className="mr-sm-2" />
+                <Button variant="outline-success">Search</Button>
+              </Form> */}
+              <Search/>
             </div>
           </Col>
         </Row>
