@@ -1,14 +1,11 @@
-// import Weather from './Weather';
 import Snow from './Snow';
 import Rain from './Rain';
 import Wind from './Wind';
+import Player from './Player';
 import './Login.css';
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Navbar from 'react-bootstrap/Navbar';
-// import Button from 'react-bootstrap/Button';
-// import Form from 'react-bootstrap/Form';
-// import FormControl from 'react-bootstrap/FormControl';
 import Search from './Search';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
@@ -23,7 +20,7 @@ class Main extends Component {
     var hashParams = {};
     var e, r = /([^&;=]+)=?([^&;]*)/g,
     q = window.location.hash.substring(1);
-    while (e === r.exec(q)) {
+    while (e = r.exec(q)) {
       hashParams[e[1]] = decodeURIComponent(e[2]);
     }
     return hashParams;
@@ -54,6 +51,7 @@ class Main extends Component {
             {/* <Snow /> */}
             {/* <Rain /> */}
             <Wind />
+            <Player token={params.authToken}/>
           </Col>
           <Col>
             <div>
@@ -63,6 +61,7 @@ class Main extends Component {
                 <Button variant="outline-success">Search</Button>
               </Form> */}
               <Search/>
+
             </div>
           </Col>
         </Row>
