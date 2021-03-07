@@ -72,7 +72,7 @@ router.get("/", function (req, res) {
 
         // use the access token to access the Spotify Web API
         // console.log(access_token);
-        let flag = createPlaylist.makePlayist(access_token, parsedWeather);
+        let flag = createPlaylist.makePlayist(access_token, client_id, client_secret, redirect_uri, parsedWeather);
    //     console.log(flag);
 
         // redirect to our main page
