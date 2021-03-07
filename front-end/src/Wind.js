@@ -186,7 +186,7 @@ class Wind extends Component {
             scale:scale
         }, {
             rotation: Math.random() * 360, 
-            x: 700,
+            x: 900,
             y: 200,
             onComplete: this.onLeafEnd, 
             onCompleteParams: [newLeaf], 

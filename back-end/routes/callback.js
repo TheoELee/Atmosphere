@@ -81,6 +81,7 @@ router.get("/", function (req, res) {
             querystring.stringify({
               zipCode: zipCode,
               displayName: user.data.display_name,
+              authToken: access_token
             })
         );
       } else {
