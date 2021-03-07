@@ -1,9 +1,7 @@
-const fetch = require("node-fetch");
 const axios = require("axios");
 const weatherKey = "e6d97c1a8a16bef9b8326ebac5e9d4ba"; //Free API key for Openweather
 const urlLocation = "http://ip-api.com/json/"; //URL for ip-api (ip location api)
-const url = "https://api.spotify.com/v1/users/{user_id}/playlists";
-
+const SpotifyWebApi = require('spotify-web-api-node');
 
 module.exports = {
   getZip: async function () {
@@ -66,9 +64,41 @@ module.exports = {
         return weatherData;
   },
 
-  makePlayist: function (access_token, obj) {
+  makePlayist: function (access_token, client_id, client_secret, redirect_uri, code, parsedWeather) {
     //******start of Location and Weather api************
-    console.log(access_token);
+    console.log(access_token + "\nFrom inside playlist function");
+
+    const spotifyApi = new SpotifyWebApi({
+      clientId: client_id,
+      clientSecret: client_secret,
+      redirectUri: redirect_uri
+    });
+    
+
+    let playlistId;
+
+    spotifyApi
+      .authorizationCodeGrant(code)
+      .then(function(data){
+
+        spotifyApi.setAccessToken(data[access_token]);
+
+        return spotifyApi.creatPlaylist(
+          //playlist name
+          'test name',
+          //playlist description
+          'test playlist from Atmosphere'
+        );
+        
+      })
+
+
+
+
+
+
+
+
 
     //***** End of Location and Weather api************
   },
