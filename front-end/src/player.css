@@ -1,0 +1,13 @@
+.player {
+    position: absolute;
+    top: -3em;
+    right: 25%;
+    margin: auto; 
+    width: 50%;
+}
+
+.playerControls div {
+    display: inline;
+    margin: 8%;
+    /* padding: 30px; */
+}

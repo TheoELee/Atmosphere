@@ -1,4 +1,5 @@
 import './Login.css';
+import './player.css';
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Container from 'react-bootstrap/Container';
@@ -145,36 +146,42 @@ class Player extends Component {
         
         return (
             <div>
+                {/* <p>Artist: {artistName}</p>
+                <p>Track: {trackName}</p>
+                <p>Album: {albumName}</p> */}
                 <Container fluid>
                     <Row>
                         <Col>
-                            <div className="App">
-                                <div className="App-header">
-                                    <h2>Now Playing</h2>
-                                </div>
+                            <div className="player">
+                                {/* <div className="player-header">
+                                </div> */}
 
                                 {error && <p>Error: {error}</p>}
 
                                 {loggedIn ? (
-                                    <div>
-                                        <p>Artist: {artistName}</p>
-                                        <p>Track: {trackName}</p>
-                                        <p>Album: {albumName}</p>
+                                    <div className="playerControls">
                                         <p>
-                                            <button onClick={() => this.onPrevClick()}>Previous</button>
-                                            <button onClick={() => this.onPlayClick()}>{playing ? "Pause" : "Play"}</button>
-                                            <button onClick={() => this.onNextClick()}>Next</button>
+                                            <div onClick={() => this.onPrevClick()}>
+                                                {/* previous  */}
+                                                <img src="https://img.icons8.com/material/48/000000/rewind.png"/>
+                                            </div>
+                                            <div onClick={() => this.onPlayClick()}>{playing ? (
+                                                // pause
+                                                <img src="https://img.icons8.com/material/48/000000/pause--v1.png"/>
+                                            ) : (
+                                                // play
+                                                <img src="https://img.icons8.com/material/48/000000/play--v2.png"/>
+                                            )}
+                                            </div>
+                                            <div onClick={() => this.onNextClick()}>
+                                                {/* next  */}
+                                                <img src="https://img.icons8.com/material/48/000000/fast-forward--v1.png"/>
+                                            </div>
                                         </p>
                                     </div>
                                 ) : (
                                     <div> 
-                                        {/* <p className="App-intro">Enter your Spotify access token</p>
-                                        <p>
-                                            <input type="text" value={ token } onChange={e => this.setState({ token: e.target.value })} />
-                                        </p>
-                                        <p>
-                                            <button onClick={() => this.handleLogin()}>Go</button>
-                                        </p> */}
+                                        <p>Connecting...</p>
                                     </div> 
                                 )
                             }

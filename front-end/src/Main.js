@@ -3,6 +3,7 @@ import Rain from './Rain';
 import Wind from './Wind';
 import Player from './Player';
 import './Login.css';
+import './main.css';
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Navbar from 'react-bootstrap/Navbar';
@@ -46,7 +47,7 @@ class Main extends Component {
       </div>
       <Container fluid>
         <Row>
-          <Col>
+          <Col className="weatherCard">
             {/* <Weather /> */}
             {/* <Snow /> */}
             {/* <Rain /> */}
