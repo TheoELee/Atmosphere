@@ -228,7 +228,26 @@ class Snow extends Component {
         this.weatherAnimations();
     }
 
+ getHashParams() {
+    var hashParams = {};
+    var e, r = /([^&;=]+)=?([^&;]*)/g,
+    q = window.location.hash.substring(1);
+    while (e = r.exec(q)) {
+      hashParams[e[1]] = decodeURIComponent(e[2]);
+    }
+    return hashParams;
+  }
+
+    getDate(){
+        let date = new Date();
+        var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+        var month = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+        return `${days[date.getDay()]} ${date.getDate()} ${month[date.getMonth()]}`
+    }
+
     render() {
+        const params = this.getHashParams();
         return (
             <div className="background">
                 <div className="container">	
@@ -242,9 +261,9 @@ class Snow extends Component {
                             <g id="cloud1" className="cloud"></g>
                         </svg>
                         <div className="details">
-                            <div className="temp">20<span>c</span></div>
+                            <div className="temp">{params.temp}<span>f</span></div>
                             <div className="right">
-                                <div id="date">Sunday 28 February</div>
+                                <div id="date">{this.getDate()}</div>
                                 <div id="summary"></div>
                             </div>
                         </div>
