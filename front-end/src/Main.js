@@ -2,6 +2,7 @@
 import Snow from './Snow';
 import Rain from './Rain';
 import Wind from './Wind';
+import MusicPlayerBar from './MusicPlayerBar';
 import './Login.css';
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -10,6 +11,8 @@ import Navbar from 'react-bootstrap/Navbar';
 // import Form from 'react-bootstrap/Form';
 // import FormControl from 'react-bootstrap/FormControl';
 import Search from './Search';
+import PlaylistTable from './PlaylistTable';
+import SaveButton from './SaveButton';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -26,17 +29,20 @@ class Main extends Component {
     while (e === r.exec(q)) {
       hashParams[e[1]] = decodeURIComponent(e[2]);
     }
+
     return hashParams;
   }
 
   render() {
     const params = this.getHashParams()
+
     return (
     <div>
       <div style={{
         borderBottom: "2px solid pink",
         marginBottom: 20
       }}>
+
       <Navbar>
         <Navbar.Text>{params.zipCode}</Navbar.Text>
         <Navbar.Toggle />
@@ -57,13 +63,23 @@ class Main extends Component {
           </Col>
           <Col>
             <div>
+              <p>{params.zipCode}</p>
               {/* <p>Playlist</p> */}
               {/* <Form inline>
                 <FormControl type="text" placeholder="Search" className="mr-sm-2" />
                 <Button variant="outline-success">Search</Button>
               </Form> */}
               <Search/>
+              <PlaylistTable/>
             </div>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <MusicPlayerBar/>
+          </Col>
+          <Col>
+            <SaveButton/>
           </Col>
         </Row>
       </Container>

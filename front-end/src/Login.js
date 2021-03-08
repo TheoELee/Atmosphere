@@ -1,6 +1,5 @@
 import './Login.css';
 import React, { Component } from 'react';
-
 class Login extends Component {
   // constructor(props) {
   //   super(props);
@@ -22,9 +21,13 @@ class Login extends Component {
     <div className="containerLogin">
       <div id="login">
         <h1 className="text-uppercase">Atmosphere</h1>
-        <p>Atmosphere is an app that uses your local weather forecast to generate and play unique Spotify playlist. (She
-          wanted us to add more user flow description here as well)</p>
+        <p>Atmosphere is an app that uses your local weather forecast to generate and play unique Spotify playlist.</p>
+        
         <a href="/login" className="btn btn-light">Log in with Spotify <i className="fab fa-spotify fa-lg"></i></a>
+        <p>Please, log in with your Spotify Premium to get our playlist.</p>
+        <p className="notes">
+          <br></br>
+          Note: Spotify requires a Premium subscription in order to stream music outside of their own apps.</p>
       </div>
     </div>
     );

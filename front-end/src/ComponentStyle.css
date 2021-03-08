@@ -1,0 +1,85 @@
+/*Container*/
+
+.search-label {
+	position: relative;
+    width: 100%;
+    /* max-width: 700px; */
+}
+
+.container input {
+	padding: 5px;
+    width: 100%;
+	min-width: 400px;
+	color: #444;
+	box-sizing: border-box;
+    border: 1px solid white;
+    outline: none;
+    border-radius: 10px;
+}
+
+.search-icon {
+	position: absolute;
+	top: 10px;
+	font-size: 24px;
+	color: #444;
+	right: 20px;
+}
+
+.table-container {
+    height: 100%;
+    width: 100%;
+    border: 1px solid white;
+	margin-top: 20px;
+    padding: 15px;
+}
+
+.bar {
+    background-color: white;
+    box-shadow: 9px 7px 40px -6px rgba(0,0,0,0.25);
+    overflow: hidden;
+    width: 100%;
+    min-width: 400px;
+    margin: 20px 0;
+	padding: 0;
+    height: 135px;
+	border-radius: 5px;
+	position: relative;
+}
+
+.artWork {
+    width: 50px;
+    height: 50px;
+    margin: 10% auto;
+}
+
+.player-container {
+    padding: 15px 15px 15px 0px;
+}
+
+.player-container h2 {
+    padding-bottom: 20px;
+}
+
+.buttons {
+    margin: 20px 0 20px 40px;
+}
+
+.buttons i {
+    padding: 0 5%;
+}
+
+.SaveButton{
+	height: 40px;
+}
+
+.SaveButton p {
+	font-size: large;
+	font-weight: bold;
+}
+
+/* 
+@media only screen  and (max-width: 1000px) {
+    .bar-container {
+        width: 100%;
+    }
+} */
