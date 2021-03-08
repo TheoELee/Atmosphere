@@ -28,17 +28,19 @@ class Main extends Component {
 		return hashParams;
 	}
 
+
+  // change this to accomodate a sun card. change this function. Make a moon card
 	getWeatherCard() {
 		const params = this.getHashParams();
 		let weatherCard = params.weatherCard;
-		if (weatherCard === "wind") return <Wind />;
+		if (weatherCard === "wind" || weatherCard === "sun") return <Wind />;
 		else if (weatherCard === "snow") return <Snow />;
 		else if (weatherCard === "rain") return <Rain />;
 	}
 
 	render() {
-		const params = this.getHashParams(),
-			weatherCard = this.getWeatherCard();
+		const params = this.getHashParams()
+			// weatherCard = this.getWeatherCard();
 		return (
 			<div>
 				<div
@@ -61,7 +63,7 @@ class Main extends Component {
 					<Row>
 						<Col className="weatherCard">
 							{/* which card is called */}
-							{weatherCard}
+							{this.getWeatherCard()}
 							<Player token={params.authToken} />
 						</Col>
 						<Col>

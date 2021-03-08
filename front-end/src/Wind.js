@@ -285,6 +285,7 @@ class Wind extends Component {
     }
 
 	render() {
+		// gonna need to change this too
 		const params = this.getHashParams();
 		return (
 			<div className="background">
