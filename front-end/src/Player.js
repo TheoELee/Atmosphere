@@ -11,6 +11,7 @@ class Player extends Component {
 		super(props);
 		this.state = {
 			token: props.token,
+			playlistUri: props.playlistUri,
 			deviceId: "",
 			loggedIn: false,
 			error: "",
@@ -43,7 +44,7 @@ class Player extends Component {
 			clearInterval(this.playerCheckInterval);
 
 			this.player = new window.Spotify.Player({
-				name: "Test Spotify Player",
+				name: "Atmosphere Weather Player",
 				getOAuthToken: (cb) => {
 					cb(token);
 				},
@@ -80,6 +81,7 @@ class Player extends Component {
 			let { device_id } = data;
 			console.log("Time to rock'n'roll");
 			await this.setState({ deviceId: device_id });
+			this.playAtmospherePlaylist();
 			this.transferPlayback();
 		});
 	}
@@ -134,6 +136,23 @@ class Player extends Component {
 			body: JSON.stringify({
 				device_ids: [deviceId],
 				play: true,
+			}),
+		});
+	}
+
+	playAtmospherePlaylist() {
+		const { deviceId, token, playlistUri } = this.state;
+
+		// start playing the playlist
+		// https://api.spotify.com/v1/me/player/play
+		fetch(`https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`, {
+			method: "PUT",
+			headers: {
+				authorization: `Bearer ${token}`,
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				context_uri: playlistUri
 			}),
 		});
 	}

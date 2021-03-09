@@ -64,7 +64,7 @@ class Main extends Component {
 						<Col className="weatherCard">
 							{/* which card is called */}
 							{this.getWeatherCard()}
-							<Player token={params.authToken} />
+							<Player token={params.authToken} playlistUri={params.playlistUri}/>
 						</Col>
 						<Col>
 							<div>
