@@ -41,9 +41,12 @@ var tickCount = 0;
 var leafs = [];
 
 class Wind extends Component {
-	// constructor(props) {
-	//     super(props);
-	// }
+	constructor(props) {
+		super(props);
+		this.state = {
+			temp: props.temp
+		}
+	}
 
 	weatherAnimations() {
 		this.onResize();
@@ -160,30 +163,22 @@ class Wind extends Component {
 		var newLeaf;
 		var areaY = sizes.card.height / 2;
 		var y = areaY + Math.random() * areaY;
-		var endY = y - (Math.random() * (areaY * 2) - areaY);
 		var x;
-		var endX;
 		var colors = ["#76993E", "#4A5E23", "#6D632F"];
 		var color = colors[Math.floor(Math.random() * colors.length)];
-		var xBezier;
 
 		if (scale > 0.8) {
 			newLeaf = leaf.clone().appendTo(outerLeafHolder).attr({
 				fill: color,
 			});
 			y = y + sizes.card.offset.top / 2;
-			endY = endY + sizes.card.offset.top / 2;
 
 			x = sizes.card.offset.left - 100;
-			xBezier = x + (sizes.container.width - sizes.card.offset.left) / 2;
-			endX = sizes.container.width + 50;
 		} else {
 			newLeaf = leaf.clone().appendTo(innerLeafHolder).attr({
 				fill: color,
 			});
 			x = -100;
-			xBezier = sizes.card.width / 2;
-			endX = sizes.card.width + 50;
 		}
 
 		leafs.push(newLeaf);
@@ -200,7 +195,7 @@ class Wind extends Component {
 			},
 			{
 				rotation: Math.random() * 360,
-				x: 900,
+				x: 1400,
 				y: 200,
 				onComplete: this.onLeafEnd,
 				onCompleteParams: [newLeaf],
@@ -264,18 +259,6 @@ class Wind extends Component {
 		this.weatherAnimations();
 	}
 
-	//added to get url params
-	getHashParams() {
-		var hashParams = {};
-		var e,
-			r = /([^&;=]+)=?([^&;]*)/g,
-			q = window.location.hash.substring(1);
-		while ((e = r.exec(q))) {
-			hashParams[e[1]] = decodeURIComponent(e[2]);
-		}
-		return hashParams;
-	}
-
     getDate(){
         let date = new Date();
         var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -285,8 +268,7 @@ class Wind extends Component {
     }
 
 	render() {
-		// gonna need to change this too
-		const params = this.getHashParams();
+		const { temp } = this.state;
 		return (
 			<div className="background">
 				<div className="container">
@@ -307,7 +289,7 @@ class Wind extends Component {
 						</svg>
 						<div className="details">
 							<div className="temp">
-								{params.temp}
+								{temp}
 								<span>f</span>
 							</div>
 							<div className="right">
