@@ -1,17 +1,17 @@
 import Snow from "./Snow";
 import Rain from "./Rain";
 import Wind from "./Wind";
+import Sun from "./Sun";
 import Player from "./Player";
 import Playlist from "./Playlist";
-import "./Login.css";
-import "./main.css";
 import React, { Component } from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
 import Navbar from "react-bootstrap/Navbar";
-import Search from "./Search";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import "./Login.css";
+import "./main.css";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 class Main extends Component {
 	// constructor(props) {
@@ -34,9 +34,16 @@ class Main extends Component {
 	getWeatherCard() {
 		const params = this.getHashParams();
 		let weatherCard = params.weatherCard;
-		if (weatherCard === "wind" || weatherCard === "sun") return <Wind />;
-		else if (weatherCard === "snow") return <Snow />;
-		else if (weatherCard === "rain") return <Rain />;
+
+		if (weatherCard === "wind") {
+			return <Wind />;
+		} else if (weatherCard === "sun") {
+			return <Sun temp={params.temp}/>
+		} else if (weatherCard === "snow") {
+			return <Snow />;
+		} else if (weatherCard === "rain") {
+			return <Rain />;
+		}
 	}
 
 	render() {
@@ -70,9 +77,9 @@ class Main extends Component {
 							<div>
 								{/* <p>Playlist</p> */}
 								{/* <Form inline>
-                <FormControl type="text" placeholder="Search" className="mr-sm-2" />
-                <Button variant="outline-success">Search</Button>
-              </Form> */}
+									<FormControl type="text" placeholder="Search" className="mr-sm-2" />
+									<Button variant="outline-success">Search</Button>
+								</Form> */}
 								{/* <Search /> */}
 								<Playlist token={params.authToken} playlistUri={params.playlistUri} />
 							</div>
