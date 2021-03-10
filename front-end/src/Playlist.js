@@ -54,20 +54,6 @@ class Playlist extends Component {
 	componentDidMount() {
         this.getTracksInPlaylist()
     }
-
-                    // <Container fluid>
-                    //     <Row>
-                    //         <Col>
-                    //             <Card.Body>{tracks[0].name} - {/*tracks[0].artists[0].name*/} - {/*tracks[0].album.name*/}</Card.Body>
-                    //         </Col>
-                    //     </Row>
-                    //     <Row>
-                    //         <Col>
-                    //         hello
-                    //         </Col>
-                    //     </Row>
-
-                    // </Container>
     
 	render() {
         const { 
@@ -130,7 +116,7 @@ class Playlist extends Component {
                     <Container fluid>
                         <Row>
                             <Col>
-                                <Card.Body>6. <img width="50" height="50" src={albumArt[6]}></img> {tracks[5]} - {artists[5]} - {albums[5]}</Card.Body>
+                                <Card.Body>6. <img width="50" height="50" src={albumArt[5]}></img> {tracks[5]} - {artists[5]} - {albums[5]}</Card.Body>
                             </Col>
                         </Row>
                     </Container>

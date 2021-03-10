@@ -41,7 +41,6 @@ class Main extends Component {
 
 	render() {
 		const params = this.getHashParams()
-			// weatherCard = this.getWeatherCard();
 		return (
 			<div>
 				<div
@@ -65,7 +64,7 @@ class Main extends Component {
 						<Col className="weatherCard">
 							{/* which card is called */}
 							{this.getWeatherCard()}
-							<Player token={params.authToken} playlistUri={params.playlistUri}/>
+							<Player token={params.authToken} playlistUri={params.playlistUri} />
 						</Col>
 						<Col>
 							<div>

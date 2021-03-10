@@ -50,8 +50,13 @@ module.exports = {
         //Needs testing
         //Snow measure in milimeters over 3 hour period
         let rain = 0;
-        if (data.rain)
-          rain = data.rain["3h"];
+        if (data.rain) {
+          if (data.rain["3h"]) {
+            rain = data.rain["3h"]
+          } else {
+            rain = data.rain["1h"];
+          }
+        }
 
         //Needs testing
         //Snow measure in milimeters over 3 hour period
