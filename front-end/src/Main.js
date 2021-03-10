@@ -2,6 +2,7 @@ import Snow from "./Snow";
 import Rain from "./Rain";
 import Wind from "./Wind";
 import Player from "./Player";
+import Playlist from "./Playlist";
 import "./Login.css";
 import "./main.css";
 import React, { Component } from "react";
@@ -40,7 +41,6 @@ class Main extends Component {
 
 	render() {
 		const params = this.getHashParams()
-			// weatherCard = this.getWeatherCard();
 		return (
 			<div>
 				<div
@@ -64,7 +64,7 @@ class Main extends Component {
 						<Col className="weatherCard">
 							{/* which card is called */}
 							{this.getWeatherCard()}
-							<Player token={params.authToken} playlistUri={params.playlistUri}/>
+							<Player token={params.authToken} playlistUri={params.playlistUri} />
 						</Col>
 						<Col>
 							<div>
@@ -73,7 +73,8 @@ class Main extends Component {
                 <FormControl type="text" placeholder="Search" className="mr-sm-2" />
                 <Button variant="outline-success">Search</Button>
               </Form> */}
-								<Search />
+								{/* <Search /> */}
+								<Playlist token={params.authToken} playlistUri={params.playlistUri} />
 							</div>
 						</Col>
 					</Row>
