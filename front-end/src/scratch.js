@@ -10,28 +10,11 @@ var date = $('#date');
 var weatherContainer1 = Snap.select('#layer1');
 var weatherContainer2 = Snap.select('#layer2');
 var weatherContainer3 = Snap.select('#layer3');
-var innerRainHolder1 = weatherContainer1.group();
-var innerRainHolder2 = weatherContainer2.group();
-var innerRainHolder3 = weatherContainer3.group();
-var innerLeafHolder = weatherContainer1.group();
-var innerSnowHolder = weatherContainer1.group();
 var innerLightningHolder = weatherContainer1.group();
-var leafMask = outerSVG.rect();
-var leaf = Snap.select('#leaf');
 var sun = Snap.select('#sun');
 var sunburst = Snap.select('#sunburst');
-var outerSplashHolder = outerSVG.group();
-var outerLeafHolder = outerSVG.group();
 var outerSnowHolder = outerSVG.group();
-
 var lightningTimeout;
-
-// Set mask for leaf holder 
-
-outerLeafHolder.attr({
-	'clip-path': leafMask
-});
-
 // create sizes object, we update this later
 
 var sizes = {
@@ -189,195 +172,6 @@ function drawCloud(cloud, i)
 	}, 0)
 }
 
-function makeRain()
-{
-	// 💧 This is where we draw one drop of rain
-	
-	// first we set the line width of the line, we use this
-	// to dictate which svg group it'll be added to and 
-	// whether it'll generate a splash
-	
-	var lineWidth = Math.random() * 3;
-	
-	// ⛈ line length is made longer for stormy weather
-	
-	var lineLength = currentWeather.type == 'thunder' ? 35 : 14;
-	
-	// Start the drop at a random point at the top but leaving 
-	// a 20px margin 
-	
-	var x = Math.random() * (sizes.card.width - 40) + 20;
-	
-	// Draw the line
-	
-	var line = this['innerRainHolder' + (3 - Math.floor(lineWidth))].path('M0,0 0,' + lineLength).attr({
-		fill: 'none',
-		stroke: currentWeather.type == 'thunder' ? '#777' : '#0000ff',
-		strokeWidth: lineWidth
-	});
-	
-	// add the line to an array to we can keep track of how
-	// many there are.
-	
-	rain.push(line);
-	
-	// Start the falling animation, calls onRainEnd when the 
-	// animation finishes.
-	
-	TweenMax.fromTo(line.node, 1, {x: x, y: 0- lineLength}, {delay: Math.random(), y: sizes.card.height, ease: Power2.easeIn, onComplete: onRainEnd, onCompleteParams: [line, lineWidth, x, currentWeather.type]});
-}
-
-function onRainEnd(line, width, x, type)
-{
-	// first lets get rid of the drop of rain 💧
-	
-	line.remove();
-	line = null;
-	
-	// We also remove it from the array
-	
-	for(var i in rain)
-	{
-		if(!rain[i].paper) rain.splice(i, 1);
-	}
-	
-	// If there is less rain than the rainCount we should
-	// make more.
-	
-	if(rain.length < settings.rainCount)
-	{
-		makeRain();
-		
-		// 💦 If the line width was more than 2 we also create a 
-		// splash. This way it looks like the closer (bigger) 
-		// drops hit the the edge of the card
-		
-		if(width > 2) makeSplash(x, type);
-	}
-}
-
-function makeSplash(x, type)
-{
-	// 💦 The splash is a single line added to the outer svg.
-
-	// The splashLength is how long the animated line will be
-	var splashLength = type == 'thunder' ? 30 : 20;
-	
-	// splashBounce is the max height the line will curve up
-	// before falling
-	var splashBounce = type == 'thunder' ? 120 : 100;
-	
-	// this sets how far down the line can fall
-	var splashDistance = 80;
-	
-	// because the storm rain is longer we want the animation
-	// to last slighly longer so the overall speed is roughly
-	// the same for both
-	var speed = type == 'thunder' ? 0.7 : 0.5;
-	
-	// Set a random splash up amount based on the max splash bounce
-	var splashUp = 0 - (Math.random() * splashBounce);
-	
-	// Sets the end x position, and in turn defines the splash direction
-	var randomX = ((Math.random() * splashDistance) - (splashDistance / 2));
-	
-	// Now we put the 3 line coordinates into an array. 
-	
-	var points = [];
-	points.push('M' + 0 + ',' + 0);
-    points.push('Q' + randomX + ',' + splashUp);
-    points.push((randomX * 2) + ',' + splashDistance);
-	
-	// Draw the line with Snap SVG
-	
-	var splash = outerSplashHolder.path(points.join(' ')).attr({
-      	fill: "none",
-      	stroke: type == 'thunder' ? '#777' : '#0000ff',
-      	strokeWidth: 1
-    });
-	
-	// We animate the dasharray to have the line travel along the path 
-	
-	var pathLength = Snap.path.getTotalLength(splash);
-	var xOffset = sizes.card.offset.left;//(sizes.container.width - sizes.card.width) / 2
-	var yOffset = sizes.card.offset.top + sizes.card.height; 
-    splash.node.style.strokeDasharray = splashLength + ' ' + pathLength;
-	
-	// Start the splash animation, calling onSplashComplete when finished
-	TweenMax.fromTo(splash.node, speed, {strokeWidth: 2, y: yOffset, x: xOffset + 20 + x, opacity: 1, strokeDashoffset: splashLength}, {strokeWidth: 0, strokeDashoffset: - pathLength, opacity: 1, onComplete: onSplashComplete, onCompleteParams: [splash], ease:  SlowMo.ease.config(0.4, 0.1, false)})
-}
-
-function onSplashComplete(splash)
-{
-	// 💦 The splash has finished animating, we need to get rid of it
-	
-	splash.remove();
-	splash = null;
-}
-
-function makeLeaf()
-{
-	var scale = 0.5 + (Math.random() * 0.5);
-	var newLeaf;
-	
-	var areaY = sizes.card.height/2;
-	var y = areaY + (Math.random() * areaY);
-	var endY = y - ((Math.random() * (areaY * 2)) - areaY)
-	var x;
-	var endX;
-	var colors = ['#76993E', '#4A5E23', '#6D632F'];
-	var color = colors[Math.floor(Math.random() * colors.length)];
-	var xBezier;
-	
-	if(scale > 0.8)
-	{
-		newLeaf = leaf.clone().appendTo(outerLeafHolder)
-		.attr({
-			fill: color
-		})
-		y = y + sizes.card.offset.top / 2;
-		endY = endY + sizes.card.offset.top / 2;
-		
-		x = sizes.card.offset.left - 100;
-		xBezier = x + (sizes.container.width - sizes.card.offset.left) / 2;
-		endX = sizes.container.width + 50;
-	}
-	else 
-	{
-		newLeaf = leaf.clone().appendTo(innerLeafHolder)
-		.attr({
-			fill: color
-		})
-		x = -100;
-		xBezier = sizes.card.width / 2;
-		endX = sizes.card.width + 50;
-		
-	}
-	
-	leafs.push(newLeaf);
-	 
-	
-	var bezier = [{x:x, y:y}, {x: xBezier, y:(Math.random() * endY) + (endY / 3)}, {x: endX, y:endY}]
-	TweenMax.fromTo(newLeaf.node, 2, {rotation: Math.random()* 180, x: x, y: y, scale:scale}, {rotation: Math.random()* 360, bezier: bezier, onComplete: onLeafEnd, onCompleteParams: [newLeaf], ease: Power0.easeIn})
-}
-
-function onLeafEnd(leaf)
-{
-	leaf.remove();
-	leaf = null;
-	
-	for(var i in leafs)
-	{
-		if(!leafs[i].paper) leafs.splice(i, 1);
-	}
-	
-	if(leafs.length < settings.leafCount)
-	{
-		makeLeaf();
-	}
-}
-
-
 function 
 ()
 {
@@ -484,7 +278,6 @@ function changeWeather(weather)
 			TweenMax.to(settings, 3, {windSpeed: 3, ease: Power2.easeInOut});
 			break;
 		case 'sun':
-			TweenMax.to(settings, 3, {windSpeed: 20, ease: Power2.easeInOut});
 			break;
 		default:
 			TweenMax.to(settings, 3, {windSpeed: 0.5, ease: Power2.easeOut});
@@ -535,8 +328,6 @@ function changeWeather(weather)
 	switch(weather.type)
 	{
 		case 'sun':
-			TweenMax.to(sun.node, 4, {x: sizes.card.width / 2, y: sizes.card.height / 2, ease: Power2.easeInOut});
-			TweenMax.to(sunburst.node, 4, {scale: 1, opacity: 0.8, y: (sizes.card.height/2) + (sizes.card.offset.top), ease: Power2.easeInOut});
 			break;
 		default:
 			TweenMax.to(sun.node, 2, {x: sizes.card.width / 2, y: -100, leafCount: 0, ease: Power2.easeInOut});
