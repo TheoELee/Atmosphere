@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import Snap from "snapsvg-cjs";
 import $ from "jquery";
-import { gsap, Power0, Power2, Power4 } from "gsap";
+import { gsap, Power2, Power4 } from "gsap";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 // 📝 Fetch all DOM nodes in jQuery and Snap SVG
@@ -111,8 +111,8 @@ class Sun extends Component {
 		var height = space + settings.cloudHeight;
 		var arch = height + settings.cloudArch + Math.random() * settings.cloudArch;
 		var width = sizes.card.width;
+        var points = [];
 
-		var points = [];
 		points.push("M" + [-width, 0].join(","));
 		points.push([width, 0].join(","));
 		points.push("Q" + [width * 2, height / 2].join(","));
@@ -125,13 +125,11 @@ class Sun extends Component {
 		points.push([-width, 0].join(","));
 
 		var path = points.join(" ");
-		if (!cloud.path) cloud.path = cloud.group.path();
-		cloud.path.animate(
-			{
-				d: path,
-			},
-			0
-		);
+		if (!cloud.path) {
+            cloud.path = cloud.group.path();
+        }
+
+		cloud.path.animate( { d: path}, 0);
 	}
 
 	updateSummaryText() {
