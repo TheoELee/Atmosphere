@@ -12,7 +12,6 @@ var outerSVG;
 var summary;
 var sun;
 var clouds;
-var tickCount = 0;
 
 // create sizes object, we update this later
 var sizes = {
@@ -63,8 +62,6 @@ class Sun extends Component {
 	}
 
 	tick = () => {
-		tickCount++;
-		var check = tickCount % settings.renewCheck;
 
 		for (let i = 0; i < clouds.length; i++) {
 			if(clouds[i].offset > -(sizes.card.width * 1.5)) {

@@ -1,4 +1,3 @@
-import "./weather.scss";
 import React, { Component } from "react";
 import Snap from "snapsvg-cjs";
 import $ from "jquery";
@@ -6,6 +5,7 @@ import TweenMax from "gsap";
 import Power2 from "gsap";
 import Power4 from "gsap";
 import "bootstrap/dist/css/bootstrap.min.css";
+import "./weather.scss";
 
 // 📝 Fetch all DOM nodes in jQuery and Snap SVG
 var container;
@@ -15,7 +15,6 @@ var outerSVG;
 var summary;
 var weatherContainer;
 var innerRainHolder;
-// var date = $('#date');
 
 var sizes = {
 	container: {
@@ -48,6 +47,14 @@ var tickCount = 0;
 var rain = [];
 
 class Rain extends Component {
+
+	constructor(props){
+		super(props);
+		this.state ={
+			temp: props.temp
+		}
+	}
+
 	weatherAnimations() {
 		//Yes, we can just throw it in the component
 		this.onResize();
@@ -165,22 +172,16 @@ class Rain extends Component {
 		// first we set the line width of the line, we use this
 		// to dictate which svg group it'll be added to and
 		// whether it'll generate a splash
-
 		var lineWidth = Math.random() * 3;
 
 		// ⛈ line length is made longer for stormy weather
-
 		var lineLength = 14;
 
 		// Start the drop at a random point at the top but leaving
 		// a 20px margin
-
 		var x = Math.random() * (sizes.card.width - 40) + 20;
 
 		// Draw the line
-
-		// var index = 3 - Math.floor(lineWidth);
-
 		var line = innerRainHolder.path("M0,0 0," + lineLength).attr({
 			fill: "none",
 			stroke: "#0000ff",
@@ -189,12 +190,10 @@ class Rain extends Component {
 
 		// add the line to an array to we can keep track of how
 		// many there are.
-
 		rain.push(line);
 
 		// Start the falling animation, calls onRainEnd when the
 		// animation finishes.
-
 		TweenMax.fromTo(
 			line.node,
 			1,
@@ -214,26 +213,13 @@ class Rain extends Component {
 
 	onRainEnd = (line, width, x, type) => {
 		// first lets get rid of the drop of rain 💧
-
 		line.remove();
 		line = null;
 
 		// We also remove it from the array
-
 		for (var i in rain) {
 			if (!rain[i].paper) rain.splice(i, 1);
 		}
-
-		// // If there is less rain than the rainCount we should
-		// // make more.
-
-		// if (rain.length < settings.rainCount) {
-		//     this.makeRain();
-
-		//     // 💦 If the line width was more than 2 we also create a
-		//     // splash. This way it looks like the closer (bigger)
-		//     // drops hit the the edge of the card
-		// }
 	};
 
 	updateSummaryText() {
@@ -274,17 +260,6 @@ class Rain extends Component {
 		this.weatherAnimations();
 	}
 
-	getHashParams() {
-		var hashParams = {};
-		var e,
-			r = /([^&;=]+)=?([^&;]*)/g,
-			q = window.location.hash.substring(1);
-		while ((e = r.exec(q))) {
-			hashParams[e[1]] = decodeURIComponent(e[2]);
-		}
-		return hashParams;
-	}
-
     getDate(){
         let date = new Date();
         var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -294,7 +269,7 @@ class Rain extends Component {
     }
 
 	render() {
-		const params = this.getHashParams();
+		const { temp } = this.state;
 		return (
 			<div className="background">
 				<div className="container">
@@ -309,7 +284,7 @@ class Rain extends Component {
 						</svg>
 						<div className="details">
 							<div className="temp">
-								{params.temp}
+								{temp}
 								<span>f</span>
 							</div>
 							<div className="right">

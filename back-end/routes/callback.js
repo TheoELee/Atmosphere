@@ -53,43 +53,40 @@ router.get("/", function (req, res) {
 					json: true,
 				};
 
-				// console.log("first body");
-				// console.log(body);
+				const user = await axios.get(url, config);
+				const userName = user.data.display_name;
+				const userId = user.data.id;
 
-			const user = await axios.get(url, config);
-			const userName = user.data.display_name;
-			const userId = user.data.id;
+				//get the zipCode for the weather api
+				const zipCode = await utility.getZip();
 
-			//get the zipCode for the weather api
-			let zipCode = await utility.getZip();
+				//use the zipcode to get the weather Data
+				const weather = await utility.getWeather(zipCode);
 
-			//use the zipcode to get the weather Data
-			let weather = await utility.getWeather(zipCode);
+				//returns weather data parsed
+				const parsedWeather = await utility.parseWeatherData(weather);
+				const temp = parsedWeather.weatherData[1].temp.toString();
 
-			//returns weather data parsed
-			let parsedWeather = await utility.parseWeatherData(weather);
+				//determine weather card with the parsed weather data
+				const weatherCard = await utility.weatherCard(parsedWeather);
+				
+				// get users top artists
+				// this could/should be refactored
+				const selectedTracks = await utility.getTopArtists(access_token)
+				const playlistUri = await utility.createPlaylist(access_token, userId, selectedTracks);
 
-			//determine weather card with the parsed weather data
-			let weatherCard = await utility.weatherCard(parsedWeather);
-			
-			// get users top artists
-			// this could/should be refactored
-			const selectedTracks = await utility.getTopArtists(access_token)
-
-			const playlistUri = await utility.createPlaylist(access_token, userId, selectedTracks);
-
-			// redirect to our main page
-			res.redirect(
-				"/main/#" +
-					querystring.stringify({
-						weatherCard: weatherCard,
-						zipCode: zipCode,
-						temp: parsedWeather.temp,
-						displayName: userName,
-						authToken: access_token,
-						playlistUri: playlistUri
-					})
-				);
+				// redirect to our main page
+				res.redirect(
+					"/main/#" +
+						querystring.stringify({
+							weatherCard: weatherCard,
+							zipCode: zipCode,
+							temp: temp,
+							displayName: userName,
+							authToken: access_token,
+							playlistUri: playlistUri
+						})
+					);
 			} else {
 				res.redirect(
 					"/main/#" +
