@@ -1,7 +1,6 @@
 const axios = require("axios");
 const weatherKey = "e6d97c1a8a16bef9b8326ebac5e9d4ba"; //Free API key for Openweather
 const urlLocation = "http://ip-api.com/json/"; //URL for ip-api (ip location api)
-// const SpotifyWebApi = require('spotify-web-api-node');
 
 let normalizedWeather = {
   temp: 0.0,
@@ -30,8 +29,8 @@ module.exports = {
 
         //converting from kelvin to Farenheit
         const kTemp = data.main.temp;
-        let fTemp = ((kTemp - 273.15) * 9) / 5 + 32;
-        var temp = fTemp.toFixed(2);
+        const fTemp = ((kTemp - 273.15) * 9) / 5 + 32;
+        const temp = fTemp.toFixed(0);
 
         let wind = 0;
         if (data.wind) {
@@ -50,8 +49,13 @@ module.exports = {
         //Needs testing
         //Snow measure in milimeters over 3 hour period
         let rain = 0;
-        if (data.rain)
-          rain = data.rain["3h"];
+        if (data.rain) {
+          if (data.rain["3h"]) {
+            rain = data.rain["3h"]
+          } else {
+            rain = data.rain["1h"];
+          }
+        }
 
         //Needs testing
         //Snow measure in milimeters over 3 hour period
@@ -71,7 +75,6 @@ module.exports = {
         `{"snow": "${snow}"}]}`;
 
         weatherData = JSON.parse(text);
-
         return weatherData;
   },
 

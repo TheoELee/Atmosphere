@@ -1,9 +1,9 @@
-import './weather.scss';
 import React, { Component } from 'react';
 import Snap from "snapsvg-cjs";
 import $ from "jquery";
 import { TweenMax, Power0, Power1, Power2, Power4 } from "gsap"
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './weather.scss';
 
 // 📝 Fetch all DOM nodes in jQuery and Snap SVG
 var container;
@@ -14,7 +14,6 @@ var summary;
 var weatherContainer;
 var innerSnowHolder;
 var outerSnowHolder;
-// var date = $('#date');
 
 var sizes = {
     container: {width: 0, height: 0},
@@ -39,12 +38,14 @@ var tickCount = 0;
 var snow = [];
 
 class Snow extends Component {
-    // constructor(props) {
-    //     super(props);
-    // }
+    constructor(props) {
+        super(props);
+        this.state = {
+            temp: props.temp
+        }
+    }
     
     weatherAnimations() {
-        // I can probably throw this in a componenetDidUpdate right?
         this.onResize();
 
         // draw clouds
@@ -55,9 +56,6 @@ class Snow extends Component {
         
         TweenMax.killTweensOf(summary);
         TweenMax.to(summary, 1, {opacity: 0, x: -30, onComplete: this.updateSummaryText, ease: Power4.easeIn})
-        // TweenMax.duration(summary, 1, {opacity: 0, x: -30, onComplete: this.updateSummaryText, ease: Power4.easeIn})
-        
-        container.addClass('snow');
 
         // snowCount
         TweenMax.to(settings, 3, {snowCount: 40, ease: Power2.easeInOut});
@@ -148,12 +146,10 @@ class Snow extends Component {
         var newSnow;
         
         var x = 20 + (Math.random() * (sizes.card.width - 40));
-        // var endX; // = x - ((Math.random() * (areaX * 2)) - areaX)
         var y = -10;
         var endY;
         
-        if(scale > 0.8)
-        {
+        if(scale > 0.8) {
             newSnow = outerSnowHolder.circle(0, 0, 5)
                 .attr({
                     fill: 'white'
@@ -161,20 +157,13 @@ class Snow extends Component {
             endY = sizes.container.height + 10;
             y = sizes.card.offset.top + settings.cloudHeight;
             x =  x + sizes.card.offset.left;
-            //xBezier = x + (sizes.container.width - sizes.card.offset.left) / 2;
-            //endX = sizes.container.width + 50;
         }
-        else 
-        {
+        else {
             newSnow = innerSnowHolder.circle(0, 0 ,5)
             .attr({
                 fill: 'white'
             })
             endY = sizes.card.height + 10;
-            //x = -100;
-            //xBezier = sizes.card.width / 2;
-            //endX = sizes.card.width + 50;
-            
         }
         
         snow.push(newSnow);
@@ -188,13 +177,11 @@ class Snow extends Component {
         flake.remove();
         flake = null;
         
-        for(let i in snow)
-        {
+        for(let i in snow) {
             if(!snow[i].paper) snow.splice(i, 1);
         }
         
-        if(snow.length < settings.snowCount)
-        {
+        if(snow.length < settings.snowCount) {
             this.makeSnow();
         }
     }
@@ -228,16 +215,6 @@ class Snow extends Component {
         this.weatherAnimations();
     }
 
- getHashParams() {
-    var hashParams = {};
-    var e, r = /([^&;=]+)=?([^&;]*)/g,
-    q = window.location.hash.substring(1);
-    while (e = r.exec(q)) {
-      hashParams[e[1]] = decodeURIComponent(e[2]);
-    }
-    return hashParams;
-  }
-
     getDate(){
         let date = new Date();
         var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -247,7 +224,7 @@ class Snow extends Component {
     }
 
     render() {
-        const params = this.getHashParams();
+        const { temp } = this.state;
         return (
             <div className="background">
                 <div className="container">	
@@ -261,7 +238,9 @@ class Snow extends Component {
                             <g id="cloud1" className="cloud"></g>
                         </svg>
                         <div className="details">
-                            <div className="temp">{params.temp}<span>f</span></div>
+                            <div className="temp">
+                                {temp}
+                                <span>f</span></div>
                             <div className="right">
                                 <div id="date">{this.getDate()}</div>
                                 <div id="summary"></div>

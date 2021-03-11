@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import Snap from "snapsvg-cjs";
 import $ from "jquery";
-import { gsap, Power0, Power2, Power4 } from "gsap";
+import { gsap, Power2, Power4 } from "gsap";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 // 📝 Fetch all DOM nodes in jQuery and Snap SVG
@@ -10,12 +10,8 @@ var card;
 var innerSVG;
 var outerSVG;
 var summary;
-var weatherContainer;
-var innerLeafHolder;
-var leafMask;
-var leaf;
-var outerLeafHolder;
-// var date = $('#date');
+var sun;
+var clouds;
 
 // create sizes object, we update this later
 var sizes = {
@@ -23,10 +19,6 @@ var sizes = {
 	card: { width: 0, height: 0 },
 };
 
-// grab cloud groups
-var clouds;
-
-// 🛠 app settings
 // in an object so the values can be animated in tweenmax
 var settings = {
 	windSpeed: 2,
@@ -34,18 +26,15 @@ var settings = {
 	cloudHeight: 100,
 	cloudSpace: 30,
 	cloudArch: 50,
-	renewCheck: 10,
 };
 
-var tickCount = 0;
-var leafs = [];
-
-class Wind extends Component {
+class Sun extends Component {
 	constructor(props) {
-		super(props);
-		this.state = {
-			temp: props.temp
-		}
+        super(props);
+        
+        this.state = {
+            temp: props.temp
+        }
 	}
 
 	weatherAnimations() {
@@ -65,42 +54,39 @@ class Wind extends Component {
 			ease: Power4.easeIn,
 		});
 
-		gsap.to(settings, 3, { windSpeed: 3, ease: Power2.easeInOut });
-		gsap.to(settings, 3, { leafCount: 5, ease: Power2.easeInOut });
+        gsap.to(settings, 3, {windSpeed: 20, ease: Power2.easeInOut});
+        gsap.to(sun.node, 4, {x: sizes.card.width / 2, y: sizes.card.height / 2, ease: Power2.easeInOut});
 
 		// 🏃 start animations
 		requestAnimationFrame(this.tick);
 	}
 
 	tick = () => {
-		tickCount++;
-		var check = tickCount % settings.renewCheck;
-
-		if (check) {
-			if (leafs.length < settings.leafCount) {
-				this.makeLeaf();
-			}
-		}
 
 		for (let i = 0; i < clouds.length; i++) {
-			clouds[i].offset += settings.windSpeed / (i + 1);
-			if (clouds[i].offset > sizes.card.width)
-				clouds[i].offset = 0 + (clouds[i].offset - sizes.card.width);
-			clouds[i].group.transform("t" + clouds[i].offset + "," + 0);
+			if(clouds[i].offset > -(sizes.card.width * 1.5)) {
+                clouds[i].offset += settings.windSpeed / (i + 1)
+            }
+
+			if(clouds[i].offset > sizes.card.width * 2.5) {
+                clouds[i].offset = -(sizes.card.width * 1.5)
+            }
+
+			clouds[i].group.transform('t' + clouds[i].offset + ',' + 0);
 		}
 
 		requestAnimationFrame(this.tick);
 	};
 
 	onResize() {
-		// 📏 grab window and card sizes
+		// Grab window and card sizes
 		sizes.container.width = container.width();
 		sizes.container.height = container.height();
 		sizes.card.width = card.width();
 		sizes.card.height = card.height();
 		sizes.card.offset = card.offset();
 
-		// 📐 update svg sizes
+		// Update svg sizes
 		innerSVG.attr({
 			width: sizes.card.width,
 			height: sizes.card.height,
@@ -109,34 +95,21 @@ class Wind extends Component {
 		outerSVG.attr({
 			width: sizes.container.width,
 			height: sizes.container.height,
-		});
-
-		// 🍃 The leaf mask is for the leafs that float out of the
-		// container, it is full window height and starts on the left
-		// inline with the card
-		leafMask.attr({
-			x: sizes.card.offset.left,
-			y: 0,
-			width: sizes.container.width - sizes.card.offset.left,
-			height: sizes.container.height,
-		});
+        });
 	}
 
 	drawCloud(cloud, i) {
-		/* 
-        ☁️ We want to create a shape thats loopable but that can also
+		/* We want to create a shape thats loopable but that can also
         be animated in and out. So we use Snap SVG to draw a shape
         with 4 sections. The 2 ends and 2 arches the same width as
         the card. So the final shape is about 4 x the width of the
-        card.
-        */
-
+        card. */
 		var space = settings.cloudSpace * i;
 		var height = space + settings.cloudHeight;
 		var arch = height + settings.cloudArch + Math.random() * settings.cloudArch;
 		var width = sizes.card.width;
+        var points = [];
 
-		var points = [];
 		points.push("M" + [-width, 0].join(","));
 		points.push([width, 0].join(","));
 		points.push("Q" + [width * 2, height / 2].join(","));
@@ -149,78 +122,15 @@ class Wind extends Component {
 		points.push([-width, 0].join(","));
 
 		var path = points.join(" ");
-		if (!cloud.path) cloud.path = cloud.group.path();
-		cloud.path.animate(
-			{
-				d: path,
-			},
-			0
-		);
+		if (!cloud.path) {
+            cloud.path = cloud.group.path();
+        }
+
+		cloud.path.animate( { d: path}, 0);
 	}
-
-	makeLeaf() {
-		var scale = 0.5 + Math.random() * 0.5;
-		var newLeaf;
-		var areaY = sizes.card.height / 2;
-		var y = areaY + Math.random() * areaY;
-		var x;
-		var colors = ["#76993E", "#4A5E23", "#6D632F"];
-		var color = colors[Math.floor(Math.random() * colors.length)];
-
-		if (scale > 0.8) {
-			newLeaf = leaf.clone().appendTo(outerLeafHolder).attr({
-				fill: color,
-			});
-			y = y + sizes.card.offset.top / 2;
-
-			x = sizes.card.offset.left - 100;
-		} else {
-			newLeaf = leaf.clone().appendTo(innerLeafHolder).attr({
-				fill: color,
-			});
-			x = -100;
-		}
-
-		leafs.push(newLeaf);
-
-		// let bezier = [{x:x, y:y}, {x: xBezier, y:(Math.random() * endY) + (endY / 3)}, {x: endX, y:endY}]
-		gsap.fromTo(
-			newLeaf.node,
-			2,
-			{
-				rotation: Math.random() * 180,
-				x: x,
-				y: y,
-				scale: scale,
-			},
-			{
-				rotation: Math.random() * 360,
-				x: 1400,
-				y: 200,
-				onComplete: this.onLeafEnd,
-				onCompleteParams: [newLeaf],
-				ease: Power0.easeIn,
-			}
-		);
-	}
-
-	onLeafEnd = (leaf) => {
-		leaf.remove();
-		leaf = null;
-
-		for (let i in leafs) {
-			if (!leafs[i].paper) {
-				leafs.splice(i, 1);
-			}
-		}
-
-		if (leafs.length < settings.leafCount) {
-			this.makeLeaf();
-		}
-	};
 
 	updateSummaryText() {
-		summary.html("Windy");
+		summary.html("Sunny");
 		gsap.fromTo(
 			summary,
 			1.5,
@@ -231,14 +141,12 @@ class Wind extends Component {
 
 	componentDidMount() {
 		// Get svg elements
-		weatherContainer = Snap.select("#layer1");
 		innerSVG = Snap("#inner");
 		outerSVG = Snap("#outer");
 		summary = $("#summary");
 		container = $(".container");
 		card = $("#card");
-		leaf = Snap.select("#leaf");
-		leafMask = outerSVG.rect();
+        sun = Snap.select('#sun');
 
 		// Grab cloud groups
 		clouds = [
@@ -247,19 +155,10 @@ class Wind extends Component {
 			{ group: Snap.select("#cloud3") },
 		];
 
-		// Windy
-		outerLeafHolder = outerSVG.group();
-		innerLeafHolder = weatherContainer.group();
-
-		// Set mask for leaf holder
-		outerLeafHolder.attr({
-			"clip-path": leafMask,
-		});
-
 		this.weatherAnimations();
 	}
 
-    getDate(){
+    getDate() {
         let date = new Date();
         var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
         var month = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -268,18 +167,13 @@ class Wind extends Component {
     }
 
 	render() {
-		const { temp } = this.state;
+        const { temp } = this.state;
 		return (
 			<div className="background">
 				<div className="container">
 					<div id="card" className="weather">
 						<svg id="inner">
-							<defs>
-								<path
-									id="leaf"
-									d="M41.9,56.3l0.1-2.5c0,0,4.6-1.2,5.6-2.2c1-1,3.6-13,12-15.6c9.7-3.1,19.9-2,26.1-2.1c2.7,0-10,23.9-20.5,25 c-7.5,0.8-17.2-5.1-17.2-5.1L41.9,56.3z"
-								/>
-							</defs>
+                    I       <circle id="sun" style= {{ fill: "#F7ED47" }} cx="0" cy="0" r="50"/>
 							<g id="layer3"></g>
 							<g id="cloud3" className="cloud"></g>
 							<g id="layer2"></g>
@@ -305,4 +199,4 @@ class Wind extends Component {
 	}
 }
 
-export default Wind;
+export default Sun;

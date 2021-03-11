@@ -163,30 +163,17 @@ class Player extends Component {
 
 	render() {
 		const {
-			token,
 			loggedIn,
-			artistName,
-			trackName,
-			albumName,
 			error,
-			position,
-			duration,
 			playing,
-			connected,
 		} = this.state;
 
 		return (
 			<div>
-				{/* <p>Artist: {artistName}</p>
-                <p>Track: {trackName}</p>
-                <p>Album: {albumName}</p> */}
 				<Container fluid>
 					<Row>
 						<Col>
 							<div className="player">
-								{/* <div className="player-header">
-                                </div> */}
-
 								{error && <p>Error: {error}</p>}
 
 								{loggedIn ? (
@@ -194,20 +181,20 @@ class Player extends Component {
 										<p>
 											<div onClick={() => this.onPrevClick()}>
 												{/* previous  */}
-												<img src="https://img.icons8.com/material/48/000000/rewind.png" />
+												<img src="https://img.icons8.com/material/48/000000/rewind.png" alt="previous track"/>
 											</div>
 											<div onClick={() => this.onPlayClick()}>
 												{playing ? (
 													// pause
-													<img src="https://img.icons8.com/material/48/000000/pause--v1.png" />
+													<img src="https://img.icons8.com/material/48/000000/pause--v1.png" alt="pause button"/>
 												) : (
 													// play
-													<img src="https://img.icons8.com/material/48/000000/play--v2.png" />
+													<img src="https://img.icons8.com/material/48/000000/play--v2.png" alt="play button"/>
 												)}
 											</div>
 											<div onClick={() => this.onNextClick()}>
 												{/* next  */}
-												<img src="https://img.icons8.com/material/48/000000/fast-forward--v1.png" />
+												<img src="https://img.icons8.com/material/48/000000/fast-forward--v1.png" alt="next track"/>
 											</div>
 										</p>
 									</div>
