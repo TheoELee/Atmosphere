@@ -24,6 +24,7 @@ body {
 	background: linear-gradient(120deg, rgba(50, 150, 100, 0.2) , rgba(0, 0, 100, 0) );
 }
 
+
 .container {
     display: flex;
 	flex-direction: column;
@@ -58,7 +59,7 @@ body {
 		left: 0;
 		right: 0;
 		padding: 16px 20px;
-		color: #888;
+		color: rgb(156, 179, 172);
 		display: flex;
 		flex-direction: row;
 		justify-content: space-between;
@@ -91,6 +92,34 @@ body {
 		}
 	}
 }
+
+
+.weatherNight {
+	background-color: #454e6a;
+	transition: background-color $speed ease;
+	
+	#inner {
+		background-color: #5d71ae;
+		background: linear-gradient(to bottom, rgba(130, 142, 167, 0.5) 50%, rgba(24, 2, 85, 0) 100%);
+	}
+	
+	.cloud {
+		transition: fill $speed ease;
+	}
+		
+	#cloud1 {
+		fill: #3a3535;
+	}
+
+	#cloud2 {
+		fill: #3a3535;
+	}
+
+	#cloud3 { 
+		fill: #3a3535;
+	}
+}
+
 
 .weather {
 	background-color: #DAE3FD;

@@ -2,6 +2,7 @@ import Snow from "./Snow";
 import Rain from "./Rain";
 import Wind from "./Wind";
 import Sun from "./Sun";
+import Night from "./Night";
 import Player from "./Player";
 import Playlist from "./Playlist";
 import React, { Component } from "react";
@@ -37,6 +38,9 @@ class Main extends Component {
 			return <Snow temp={temp}/>;
 		} else if (weatherCard === "rain") {
 			return <Rain temp={temp}/>;
+		}
+		else if(weatherCard === "night"){
+			return <Night temp = {temp}/>;
 		}
 	}
 
