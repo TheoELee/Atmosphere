@@ -78,6 +78,12 @@ module.exports = {
         return weatherData;
   },
 
+  getTime: function(){
+    //get time for night card
+      var hour = new Date();
+      return "the current hour is " +hour.getHours();
+  },
+
 	weatherCard: function (parsedWeather) {
 		if (parsedWeather.rain > 0) 
       return "rain";
@@ -87,8 +93,11 @@ module.exports = {
       return "wind";
 		else if (parsedWeather.clouds > parsedWeather.sun) 
       return "cloud";
+    else if(this.getTime() > 19)
+      return "night";
 		else 
-      return "sun";
+      return "night";
+
 	},
 
   // Creates a playlist in users Spotify account
