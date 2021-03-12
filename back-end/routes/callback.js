@@ -72,13 +72,20 @@ router.get("/", function (req, res) {
 
 				//determine weather card with the parsed weather data
 				const weatherCard = await utility.weatherCard(parsedWeather, hour);
-
-
 				
 				// get users top artists
 				// this could/should be refactored
-				const selectedTracks = await utility.getTopArtists(access_token, weatherCard)
-				const playlistUri = await utility.createPlaylist(access_token, userId, selectedTracks);
+				/*
+				let selectedTracks = [];
+				if(selectedTracks = await utility.getTopArtists(access_token, weatherCard) === -1){
+
+					selectedTracks = await utility.getTopArtists(access_token, weatherCard);
+				}
+				*/
+
+				let selectedTracks = await utility.getTopArtists(access_token, weatherCard);
+				let playlistUri = await utility.createPlaylist(access_token, userId, selectedTracks);
+
 
 				// redirect to our main page
 				res.redirect(
