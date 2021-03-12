@@ -11,8 +11,8 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import "./Login.css";
-import "bootstrap/dist/css/bootstrap.min.css";
 import "./main.css";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 class Main extends Component {
 	constructor(props) {
@@ -58,24 +58,29 @@ class Main extends Component {
 			<div>
 				<div
 					style={{
-						borderBottom: "2px solid pink",
+						borderBottom: "2px solid #E5989B",
 						marginBottom: 20
 					}}
 				>
 					<Navbar className='navbar'>
-						<Navbar.Text className='navbar-text'>{zipCode}</Navbar.Text>
-						<Navbar.Toggle />
-						<Navbar.Collapse className="justify-content-end">
-							<Navbar.Text className='navbar-text'>
-								{displayName} <i className="fab fa-spotify fa-lg"></i>
-							</Navbar.Text>
-						</Navbar.Collapse>
+						<Col xs lg="5">
+							<Navbar.Text className='navbar-text'>{zipCode}</Navbar.Text>
+						</Col>
+						<Col xs lg="3">
+							<Navbar.Text className="main-header">Atmosphere</Navbar.Text>
+						</Col>
+						<Col xs lg="4">
+							<Navbar.Collapse className="justify-content-end">
+								<Navbar.Text className='navbar-text'>
+									{displayName} <i className="fab fa-spotify fa-lg"></i>
+								</Navbar.Text>
+							</Navbar.Collapse>
+						</Col>
 					</Navbar>
 				</div>
 				<Container fluid>
 					<Row>
-						<Col className="weatherCard">
-							{/* which card is called */}
+						<Col>
 							{this.getWeatherCard()}
 							<Player token={authToken} playlistUri={playlistUri} weatherCard = {weatherCard}/>
 						</Col>

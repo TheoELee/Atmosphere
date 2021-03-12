@@ -9,3 +9,12 @@
 .navbar {
     margin-bottom: 0px !important;
 }
+
+.main-header {
+    font-size: x-large;
+}
+
+.footer {
+    margin: auto;
+    width: 50%;
+}
