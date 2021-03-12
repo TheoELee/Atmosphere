@@ -164,11 +164,8 @@ class Player extends Component {
 	}
 
 	changePlayerButtons(){
-
 		const {weatherCard}  = this.state
 
-
-		console.log(weatherCard + " THis is the weatherCard!");
 		let play = "";
 		let pause = "";
 		let next =  "";
