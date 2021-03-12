@@ -1,3 +1,11 @@
 /* .weatherCard {
     z-index: 0;
 } */
+
+.navbar-text {
+    color: white !important;
+}
+
+.navbar {
+    margin-bottom: 0px !important;
+}

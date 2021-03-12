@@ -11,8 +11,8 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import "./Login.css";
-import "./main.css";
 import "bootstrap/dist/css/bootstrap.min.css";
+import "./main.css";
 
 class Main extends Component {
 	constructor(props) {
@@ -57,14 +57,14 @@ class Main extends Component {
 				<div
 					style={{
 						borderBottom: "2px solid pink",
-						marginBottom: 20,
+						marginBottom: 20
 					}}
 				>
-					<Navbar>
-						<Navbar.Text>{zipCode}</Navbar.Text>
+					<Navbar className='navbar'>
+						<Navbar.Text className='navbar-text'>{zipCode}</Navbar.Text>
 						<Navbar.Toggle />
 						<Navbar.Collapse className="justify-content-end">
-							<Navbar.Text>
+							<Navbar.Text className='navbar-text'>
 								{displayName} <i className="fab fa-spotify fa-lg"></i>
 							</Navbar.Text>
 						</Navbar.Collapse>
