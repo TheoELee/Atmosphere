@@ -22,10 +22,10 @@ var sizes = {
 // in an object so the values can be animated in tweenmax
 var settings = {
 	windSpeed: 2,
-	leafCount: 10,
-	cloudHeight: 130,
+	leafCount: 0,
+	cloudHeight: 100,
 	cloudSpace: 30,
-	cloudArch: 200,
+	cloudArch: 50,
 };
 
 class Sun extends Component {

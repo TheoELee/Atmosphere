@@ -96,7 +96,7 @@ module.exports = {
     else if(this.getTime() > 19)
       return "night";
 		else 
-      return "night";
+      return "sun";
 
 	},
 
@@ -118,7 +118,7 @@ module.exports = {
       }
     })
 
-    console.log(playlist);
+    //console.log(playlist);
     await this.addTracksToPlaylist(accessToken, playlist.data.id, selectedTracks)
     return playlist.data.uri;
   },
@@ -241,8 +241,6 @@ module.exports = {
     normalizedWeather.sun = sun / 100;
     normalizedWeather.rain = rain / 100;
     normalizedWeather.snow = snow / 100;
-
-    console.log(normalizedWeather);
   },
 
   selectTracks: async function (tracks, accessToken, weatherCard) {
@@ -287,7 +285,9 @@ module.exports = {
       }
 
 
-
+      normalizedWeather.clouds = 0.2;
+      normalizedWeather.rain = 0.2;
+      normalizedWeather.snow = 0.2;
 
       // add only the tracks that are close to our nomalizedWeatherValues
       const upperTempoBound = audioFeatures.data.tempo + 30;
@@ -298,29 +298,29 @@ module.exports = {
         const lowerEnergyBound = audioFeatures.data.energy - .5;
 
         if (normalizedWeather.wind > lowerEnergyBound && normalizedWeather.wind < upperEnergyBound) {
-          const upperValenceBound = audioFeatures.data.valence + .5;
-          const lowerValenceBound = audioFeatures.data.valence - .5;
+       //   const upperValenceBound = audioFeatures.data.valence + .5;
+        //  const lowerValenceBound = audioFeatures.data.valence - .5;
 
-          if (normalizedWeather.sun > lowerValenceBound && normalizedWeather.sun < upperValenceBound) {
-            const upperDanceBound = audioFeatures.data.danceability + .5;
-            const lowerDanceBound = audioFeatures.data.danceability - .5;
+          // if (normalizedWeather.sun > lowerValenceBound && normalizedWeather.sun < upperValenceBound) {
+          //   const upperDanceBound = audioFeatures.data.danceability + .5;
+          //   const lowerDanceBound = audioFeatures.data.danceability - .5;
 
-            if (normalizedWeather.clouds > lowerDanceBound && normalizedWeather.clouds < upperDanceBound) {
+            // if (normalizedWeather.clouds > lowerDanceBound && normalizedWeather.clouds < upperDanceBound) {
 
-              const upperAcousticBound = audioFeatures.data.acousticness + .5;
-              const lowerAcousticBound = audioFeatures.data.acousticness - .5;
+            //   const upperAcousticBound = audioFeatures.data.acousticness + .5;
+            //   const lowerAcousticBound = audioFeatures.data.acousticness - .5;
 
-              if (normalizedWeather.rain > lowerAcousticBound && normalizedWeather.rain < upperAcousticBound) {
-                const upperInstrumentalBound = audioFeatures.data.instrumentalness + .5;
-                const lowerInstrumentalBound = audioFeatures.data.instrumentalness - .5;
+            //   if (normalizedWeather.rain > lowerAcousticBound && normalizedWeather.rain < upperAcousticBound) {
+            //     const upperInstrumentalBound = audioFeatures.data.instrumentalness + .5;
+            //     const lowerInstrumentalBound = audioFeatures.data.instrumentalness - .5;
 
-                if (normalizedWeather.snow > lowerInstrumentalBound && normalizedWeather.snow < upperInstrumentalBound) {
+//                if (normalizedWeather.snow > lowerInstrumentalBound && normalizedWeather.snow < upperInstrumentalBound) {
                   console.log("adding a track!")
                   selectedTracks.push(track.uri);
-                }
-              }
-            }
-          }
+ //               }
+//              }
+            //}
+          //}
         }
       }
     }

@@ -6,7 +6,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-
+import "./Main";
 class Player extends Component {
 	constructor(props) {
 		super(props);
@@ -23,6 +23,7 @@ class Player extends Component {
 			position: 0,
 			duration: 0,
 			connected: false,
+		  	weatherCard: props.weatherCard,
 		};
 
 		this.playerCheckInterval = null;
@@ -162,7 +163,44 @@ class Player extends Component {
 		this.handleLogin();
 	}
 
+	changePlayerButtons(){
+
+		const {weatherCard}  = this.state
+
+
+		console.log(weatherCard + " THis is the weatherCard!");
+		let play = "";
+		let pause = "";
+		let next =  "";
+		let previous = ""; 
+
+		if(weatherCard === 'night'){
+			play = "https://img.icons8.com/ios-glyphs/48/ffffff/play--v1.png";
+			pause = "https://img.icons8.com/material/48/ffffff/pause--v1.png";
+			next = "https://img.icons8.com/ios-filled/48/ffffff/end--v1.png";
+			previous =	"https://img.icons8.com/ios-filled/48/ffffff/skip-to-start--v1.png";
+		}
+
+		else{
+			play = "https://img.icons8.com/material/48/000000/play--v2.png";
+			pause = "https://img.icons8.com/material/48/000000/pause--v1.png";
+			next = "https://img.icons8.com/material/48/000000/fast-forward--v1.png";
+			previous = "https://img.icons8.com/material/48/000000/rewind.png";
+		}
+
+        let buttonList = '{"buttonImages":[' +
+        `{"play": "${play}"},` +
+        `{"pause": "${pause}"},` +
+        `{"next": "${next}"},` +
+        `{"previous": "${previous}"}]}`; 
+
+		let buttonImages = JSON.parse(buttonList)
+
+		return buttonImages;
+	}
+
 	render() {
+		let buttons = this.changePlayerButtons();
 		const {
 			loggedIn,
 			error,
@@ -182,20 +220,20 @@ class Player extends Component {
 										<p>
 											<div onClick={() => this.onPrevClick()}>
 												{/* previous  */}
-												<img className = "buttons" src="https://img.icons8.com/material/48/000000/rewind.png" alt="previous track"/>
+												<img src={buttons.buttonImages[3].previous} alt="play previous track"/>
 											</div>
 											<div onClick={() => this.onPlayClick()}>
 												{playing ? (
 													// pause
-													<img src="https://img.icons8.com/material/48/000000/pause--v1.png" alt="pause button"/>
+													<img src={buttons.buttonImages[1].pause} alt="pause button"/>
 												) : (
 													// play
-													<img src="https://img.icons8.com/material/48/000000/play--v2.png" alt="play button"/>
+													<img src={buttons.buttonImages[0].play} alt="play button"/>
 												)}
 											</div>
 											<div onClick={() => this.onNextClick()}>
 												{/* next  */}
-												<img src="https://img.icons8.com/material/48/000000/fast-forward--v1.png" alt="next track"/>
+												<img src={buttons.buttonImages[2].next} alt="play next track"/>
 											</div>
 										</p>
 									</div>
