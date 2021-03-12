@@ -49,7 +49,9 @@ class Main extends Component {
 			authToken, 
 		  	displayName,
 		  	playlistUri,
-		  	zipCode
+		  	zipCode,
+			weatherCard
+
 		} = this.state;
 
 		return (
@@ -75,7 +77,7 @@ class Main extends Component {
 						<Col className="weatherCard">
 							{/* which card is called */}
 							{this.getWeatherCard()}
-							<Player token={authToken} playlistUri={playlistUri} />
+							<Player token={authToken} playlistUri={playlistUri} weatherCard = {weatherCard}/>
 						</Col>
 						<Col>
 							<div>

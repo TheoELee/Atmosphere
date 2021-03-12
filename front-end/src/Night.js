@@ -21,11 +21,11 @@ var sizes = {
 
 // in an object so the values can be animated in tweenmax
 var settings = {
-	windSpeed: 1,
-	leafCount: 10,
-	cloudHeight: 130,
+	windSpeed: 2,
+	leafCount: 0,
+	cloudHeight: 100,
 	cloudSpace: 30,
-	cloudArch: 300,
+	cloudArch: 50,
 };
 
 class Sun extends Component {
@@ -169,11 +169,14 @@ class Sun extends Component {
 	render() {
         const { temp } = this.state;
 		return (
-			<div className="background">
+			<div className="backgroundNight">
 				<div className="container">
 					<div id="card" className="weatherNight">
 						<svg id="inner">
-                    I       <circle id="sun" style= {{ fill: "#d3e6e1" }} cx="0" cy="0" r="50"/>
+							<path id = "sun" d="M50 20A40 40 0 1 0 50 70 30 30 0 1 1 50 20z" style = {{fill: "#d3e6e1"}}/>
+							<g id = "stars"></g>
+
+
 							<g id="layer3"></g>
 							<g id="cloud3" className="cloud"></g>
 							<g id="layer2"></g>
@@ -181,7 +184,7 @@ class Sun extends Component {
 							<g id="layer1"></g>
 							<g id="cloud1" className="cloud"></g>
 						</svg>
-						<div className="details">
+						<div className="detailsNight">
 							<div className="temp">
 								{temp}
 								<span>f</span>

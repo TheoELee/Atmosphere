@@ -95,14 +95,8 @@ body {
 
 
 .weatherNight {
-	background-color: #454e6a;
-	transition: background-color $speed ease;
-	
-	#inner {
-		background-color: #5d71ae;
-		background: linear-gradient(to bottom, rgba(130, 142, 167, 0.5) 50%, rgba(24, 2, 85, 0) 100%);
-	}
-	
+	background-image: url('./images/nightSky.jpg');
+
 	.cloud {
 		transition: fill $speed ease;
 	}
@@ -118,6 +112,46 @@ body {
 	#cloud3 { 
 		fill: #3a3535;
 	}
+}
+
+.detailsNight{
+
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		padding: 16px 20px;
+		color: white;
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+		transition: color $speed ease;
+		
+		.right {
+			text-align: right;
+		}
+		
+		#date {
+			margin: 4px 0;
+		}
+		
+		#summary {
+			font-weight: 600;
+			font-size: 22px;
+		}
+
+		.temp {
+			font-size: 60px;
+			line-height: 60px;
+
+			span {
+				font-size: 18px;
+				line-height: 30px;
+				vertical-align: top;
+				margin-left: 5px;
+			}
+			
+		}
 }
 
 
