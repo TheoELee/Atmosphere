@@ -2,21 +2,6 @@ import './Login.css';
 import React, { Component } from 'react';
 
 class Login extends Component {
-  // constructor(props) {
-  //   super(props);
-  // }
-
-  // login() {
-  //     fetch("http://localhost:8888/callback").then((res) => {
-  //       console.log("hello");
-  //       return res.json();
-  //     })
-  // }
-
-  // componentWillMount() {
-  //     this.login();
-  //}
-
   render() {
     return (
     <div className="containerLogin">
