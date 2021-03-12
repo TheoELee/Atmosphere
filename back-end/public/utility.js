@@ -81,10 +81,10 @@ module.exports = {
   getTime: function(){
     //get time for night card
       var hour = new Date();
-      return "the current hour is " +hour.getHours();
+      return hour.getHours();
   },
 
-	weatherCard: function (parsedWeather) {
+	weatherCard: function (parsedWeather, hour) {
 		if (parsedWeather.rain > 0) 
       return "rain";
 		else if (parsedWeather.snow > 0) 
@@ -93,8 +93,9 @@ module.exports = {
       return "wind";
 		else if (parsedWeather.clouds > parsedWeather.sun) 
       return "cloud";
-    else if(this.getTime() > 19)
+    else if(hour > 19){
       return "night";
+    }
 		else 
       return "sun";
 
