@@ -72,7 +72,7 @@ router.get("/", function (req, res) {
 				
 				// get users top artists
 				// this could/should be refactored
-				const selectedTracks = await utility.getTopArtists(access_token)
+				const selectedTracks = await utility.getTopArtists(access_token, weatherCard)
 				const playlistUri = await utility.createPlaylist(access_token, userId, selectedTracks);
 
 				// redirect to our main page

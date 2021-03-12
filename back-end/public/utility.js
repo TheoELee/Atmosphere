@@ -141,7 +141,7 @@ module.exports = {
   },
 
   // GET https://api.spotify.com/v1/me/top/{type}
-  getTopArtists: async function (accessToken) {
+  getTopArtists: async function (accessToken, weatherCard) {
     // required params: authToken, type (artist), timeRange
     const topArtistsNames = [];
     const topArtistsUris = [];
@@ -193,10 +193,10 @@ module.exports = {
     // console.log(topArtistsUris);
     // console.log(topArtistsIds);
     // get top tracks from the top artists
-    return await this.getTopTracks(topArtistsIds, accessToken)
+    return await this.getTopTracks(topArtistsIds, accessToken, weatherCard)
   },
 
-  getTopTracks: async function (topArtistsIds, accessToken) {
+  getTopTracks: async function (topArtistsIds, accessToken, weatherCard) {
     const topTracksUri = [];
     const tracks = [];
 
@@ -214,13 +214,15 @@ module.exports = {
       const topTracks = topTracksData.data.tracks
       topTracks.forEach(track => {
         topTracksUri.push(track.uri)
-        tracks.push(track)
+        //if(tracks.length <= 100){
+          tracks.push(track)
+        //}
       })
     }
 
     // console.log("top tracks\n")
     // console.log(tracks);
-    return await this.selectTracks(tracks, accessToken);
+    return await this.selectTracks(tracks, accessToken, weatherCard);
   },
 
   //  wind => energy
@@ -243,9 +245,8 @@ module.exports = {
     console.log(normalizedWeather);
   },
 
-  selectTracks: async function (tracks, accessToken) {
+  selectTracks: async function (tracks, accessToken, weatherCard) {
     const selectedTracks = []
-
     this.shuffle(tracks);
 
     for await (track of tracks) {
@@ -266,29 +267,53 @@ module.exports = {
         console.log(e);
       })
 
+      //build a playlist based on the weatherCard
+
+      if(weatherCard === 'sun'){
+
+      }
+
+      else if(weatherCard === 'rain'){
+
+
+      }
+
+      else if(weatherCard === 'night'){
+
+      }
+
+      else if(weatherCard === 'snow'){
+
+      }
+
+
+
+
       // add only the tracks that are close to our nomalizedWeatherValues
       const upperTempoBound = audioFeatures.data.tempo + 30;
       const lowerTempoBound = audioFeatures.data.tempo - 30;
-      if (normalizedWeather.temp > lowerTempoBound && normalizedWeather.temp < upperTempoBound) {
 
+      if (normalizedWeather.temp > lowerTempoBound && normalizedWeather.temp < upperTempoBound) {
         const upperEnergyBound = audioFeatures.data.energy + .5;
         const lowerEnergyBound = audioFeatures.data.energy - .5;
-        if (normalizedWeather.wind > lowerEnergyBound && normalizedWeather.wind < upperEnergyBound) {
 
+        if (normalizedWeather.wind > lowerEnergyBound && normalizedWeather.wind < upperEnergyBound) {
           const upperValenceBound = audioFeatures.data.valence + .5;
           const lowerValenceBound = audioFeatures.data.valence - .5;
-          if (normalizedWeather.sun > lowerValenceBound && normalizedWeather.sun < upperValenceBound) {
 
+          if (normalizedWeather.sun > lowerValenceBound && normalizedWeather.sun < upperValenceBound) {
             const upperDanceBound = audioFeatures.data.danceability + .5;
             const lowerDanceBound = audioFeatures.data.danceability - .5;
+
             if (normalizedWeather.clouds > lowerDanceBound && normalizedWeather.clouds < upperDanceBound) {
 
               const upperAcousticBound = audioFeatures.data.acousticness + .5;
               const lowerAcousticBound = audioFeatures.data.acousticness - .5;
-              if (normalizedWeather.rain > lowerAcousticBound && normalizedWeather.rain < upperAcousticBound) {
 
+              if (normalizedWeather.rain > lowerAcousticBound && normalizedWeather.rain < upperAcousticBound) {
                 const upperInstrumentalBound = audioFeatures.data.instrumentalness + .5;
                 const lowerInstrumentalBound = audioFeatures.data.instrumentalness - .5;
+
                 if (normalizedWeather.snow > lowerInstrumentalBound && normalizedWeather.snow < upperInstrumentalBound) {
                   console.log("adding a track!")
                   selectedTracks.push(track.uri);

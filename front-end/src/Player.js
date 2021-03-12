@@ -1,5 +1,6 @@
 import "./Login.css";
 import "./player.css";
+import "./weather.scss";
 import React, { Component } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Container from "react-bootstrap/Container";
@@ -181,7 +182,7 @@ class Player extends Component {
 										<p>
 											<div onClick={() => this.onPrevClick()}>
 												{/* previous  */}
-												<img src="https://img.icons8.com/material/48/000000/rewind.png" alt="previous track"/>
+												<img className = "buttons" src="https://img.icons8.com/material/48/000000/rewind.png" alt="previous track"/>
 											</div>
 											<div onClick={() => this.onPlayClick()}>
 												{playing ? (
