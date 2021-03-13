@@ -2,8 +2,9 @@ var express = require('express');
 var router = express.Router();
 var querystring = require('querystring');
 var client_id = '34be20e84d994353b68c15ff78924a54'; // Your client id
-// var redirect_uri = 'http://localhost:8888/callback'; // Your redirect uri
-var redirect_uri = "https://atmosphere-pdx.herokuapp.com/callback"
+//coment out heroku to deploy locally
+var redirect_uri = 'http://localhost:8888/callback'; // Your redirect uri
+//var redirect_uri = "https://atmosphere-pdx.herokuapp.com/callback"
 
 var stateKey = 'spotify_auth_state';
 
