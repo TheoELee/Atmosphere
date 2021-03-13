@@ -5,9 +5,8 @@ var router = express.Router();
 var querystring = require("querystring");
 var client_id = "34be20e84d994353b68c15ff78924a54"; // Your client id
 var client_secret = "026ad523dd364eba9224f6a02fc31811"; // Your secret
-//comment out to deploy on heroku line 8
-var redirect_uri = "http://localhost:8888/callback"; // Your redirect uri
-//var redirect_uri = "https://atmosphere-pdx.herokuapp.com/callback"
+// var redirect_uri = "http://localhost:8888/callback"; // Your redirect uri
+var redirect_uri = "https://atmosphere-pdx.herokuapp.com/callback"
 var request = require("request"); // "Request" library
 var stateKey = "spotify_auth_state";
 var utility = require("../public/utility");
