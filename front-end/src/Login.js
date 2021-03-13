@@ -2,29 +2,16 @@ import './Login.css';
 import React, { Component } from 'react';
 
 class Login extends Component {
-  // constructor(props) {
-  //   super(props);
-  // }
-
-  // login() {
-  //     fetch("http://localhost:8888/callback").then((res) => {
-  //       console.log("hello");
-  //       return res.json();
-  //     })
-  // }
-
-  // componentWillMount() {
-  //     this.login();
-  //}
-
   render() {
     return (
     <div className="containerLogin">
       <div id="login">
         <h1 className="text-uppercase">Atmosphere</h1>
-        <p>Atmosphere is an app that uses your local weather forecast to generate and play unique Spotify playlist. (She
-          wanted us to add more user flow description here as well)</p>
+        <p>ATMOSPHERE IS AN APP THAT USES YOUR LOCAL WEATHER FORECAST TO GENERATE AND PLAY UNIQUE SPOTIFY PLAYLIST.</p>
         <a href="/login" className="btn btn-light">Log in with Spotify <i className="fab fa-spotify fa-lg"></i></a>
+        <p>PLEASE, LOG IN WITH YOUR SPOTIFY PREMIUM TO GET OUR PLAYLIST.</p>
+        <p className="notes">
+          NOTE: SPOTIFY REQUIRES A PREMIUM SUBSCRIPTION IN ORDER TO STREAM MUSIC OUTSIDE OF THEIR OWN APPS.</p>
       </div>
     </div>
     );

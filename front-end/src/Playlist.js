@@ -33,9 +33,6 @@ class Playlist extends Component {
         })
         .then(response => response.json())
         .then(data => {
-            console.log(data)
-
-
             data.items.forEach(item => {
                 tracks.push(item.track.name);
                 artists.push(item.track.artists[0].name);

@@ -2,6 +2,7 @@ import Snow from "./Snow";
 import Rain from "./Rain";
 import Wind from "./Wind";
 import Sun from "./Sun";
+import Night from "./Night";
 import Player from "./Player";
 import Playlist from "./Playlist";
 import React, { Component } from "react";
@@ -38,6 +39,9 @@ class Main extends Component {
 		} else if (weatherCard === "rain") {
 			return <Rain temp={temp}/>;
 		}
+		else if(weatherCard === "night"){
+			return <Night temp = {temp}/>;
+		}
 	}
 
 	render() {
@@ -45,33 +49,40 @@ class Main extends Component {
 			authToken, 
 		  	displayName,
 		  	playlistUri,
-		  	zipCode
+		  	zipCode,
+			weatherCard
+
 		} = this.state;
 
 		return (
 			<div>
 				<div
 					style={{
-						borderBottom: "2px solid pink",
-						marginBottom: 20,
+						borderBottom: "2px solid #E5989B",
+						marginBottom: 20
 					}}
 				>
-					<Navbar>
-						<Navbar.Text>{zipCode}</Navbar.Text>
-						<Navbar.Toggle />
-						<Navbar.Collapse className="justify-content-end">
-							<Navbar.Text>
-								{displayName} <i className="fab fa-spotify fa-lg"></i>
-							</Navbar.Text>
-						</Navbar.Collapse>
+					<Navbar className='navbar'>
+						<Col xs lg="5">
+							<Navbar.Text className='navbar-text'>{zipCode}</Navbar.Text>
+						</Col>
+						<Col xs lg="3">
+							<Navbar.Text className="main-header">Atmosphere</Navbar.Text>
+						</Col>
+						<Col xs lg="4">
+							<Navbar.Collapse className="justify-content-end">
+								<Navbar.Text className='navbar-text'>
+									{displayName} <i className="fab fa-spotify fa-lg"></i>
+								</Navbar.Text>
+							</Navbar.Collapse>
+						</Col>
 					</Navbar>
 				</div>
 				<Container fluid>
 					<Row>
-						<Col className="weatherCard">
-							{/* which card is called */}
+						<Col>
 							{this.getWeatherCard()}
-							<Player token={authToken} playlistUri={playlistUri} />
+							<Player token={authToken} playlistUri={playlistUri} weatherCard = {weatherCard}/>
 						</Col>
 						<Col>
 							<div>

@@ -78,7 +78,13 @@ module.exports = {
         return weatherData;
   },
 
-	weatherCard: function (parsedWeather) {
+  getTime: function(){
+    //get time for night card
+      var hour = new Date();
+      return hour.getHours();
+  },
+
+	weatherCard: function (parsedWeather, hour) {
 		if (parsedWeather.rain > 0) 
       return "rain";
 		else if (parsedWeather.snow > 0) 
@@ -87,8 +93,12 @@ module.exports = {
       return "wind";
 		else if (parsedWeather.clouds > parsedWeather.sun) 
       return "cloud";
+    else if(hour > 19){
+      return "night";
+    }
 		else 
       return "sun";
+
 	},
 
   // Creates a playlist in users Spotify account
@@ -109,7 +119,7 @@ module.exports = {
       }
     })
 
-    console.log(playlist);
+    //console.log(playlist);
     await this.addTracksToPlaylist(accessToken, playlist.data.id, selectedTracks)
     return playlist.data.uri;
   },
@@ -132,7 +142,7 @@ module.exports = {
   },
 
   // GET https://api.spotify.com/v1/me/top/{type}
-  getTopArtists: async function (accessToken) {
+  getTopArtists: async function (accessToken, weatherCard) {
     // required params: authToken, type (artist), timeRange
     const topArtistsNames = [];
     const topArtistsUris = [];
@@ -184,10 +194,10 @@ module.exports = {
     // console.log(topArtistsUris);
     // console.log(topArtistsIds);
     // get top tracks from the top artists
-    return await this.getTopTracks(topArtistsIds, accessToken)
+    return await this.getTopTracks(topArtistsIds, accessToken, weatherCard)
   },
 
-  getTopTracks: async function (topArtistsIds, accessToken) {
+  getTopTracks: async function (topArtistsIds, accessToken, weatherCard) {
     const topTracksUri = [];
     const tracks = [];
 
@@ -205,13 +215,15 @@ module.exports = {
       const topTracks = topTracksData.data.tracks
       topTracks.forEach(track => {
         topTracksUri.push(track.uri)
-        tracks.push(track)
+        if(tracks.length <= 500){
+          tracks.push(track)
+        }
       })
     }
 
     // console.log("top tracks\n")
-    // console.log(tracks);
-    return await this.selectTracks(tracks, accessToken);
+     console.log("The length of the tracks list is " + tracks.length);
+    return await this.selectTracks(tracks, accessToken, weatherCard);
   },
 
   //  wind => energy
@@ -221,27 +233,30 @@ module.exports = {
   //  rain => acousticness
   //  snow => instrumentalness
   normalizeWeatherData: function (temp, wind, clouds, sun, rain, snow) {
+    widenFrac1 = 0.0;
+    widenFrac2 = 0.0;
+    widenNum1 = 0;
+    widenNum2 = 0;
     const avgUSTemp = 54;
     const avgTempo = 116;
-
+    normalizedWeather.tempo = temp;
     normalizedWeather.temp = (temp / avgUSTemp) * avgTempo;
     normalizedWeather.wind = wind / 10;
     normalizedWeather.clouds = clouds / 100;
-    normalizedWeather.sun = sun / 100;
+    normalizedWeather.sun = sun / 100 / 2;
     normalizedWeather.rain = rain / 100;
     normalizedWeather.snow = snow / 100;
-
-    console.log(normalizedWeather);
   },
 
-  selectTracks: async function (tracks, accessToken) {
+  selectTracks: async function (tracks, accessToken, weatherCard) {
     const selectedTracks = []
-
     this.shuffle(tracks);
 
+    let count = 0;
     for await (track of tracks) {
-      if (selectedTracks.length > 5) {
-        break;
+
+      if (selectedTracks.length > 6) {
+        return selectedTracks;
       }
       // get audio features
       const uri = `https://api.spotify.com/v1/audio-features/${track.id}`
@@ -253,33 +268,133 @@ module.exports = {
           authorization: `Bearer ${accessToken}`
         }
       }).catch(e => {
-        console.log("there was an error");
         console.log(e);
+        return selectedTracks;
       })
+
+      //build a playlist based on the weatherCard
+      //sun: high valence, mid-high tempo, high danceability
+      /*
+  danceability
+    Danceability describes how suitable a track is for dancing based on a combination of musical elements including tempo, rhythm stability, beat strength, and overall regularity. A value of 0.0 is least danceable and 1.0 is most danceable.	Float
+  tempo
+    The overall estimated tempo of a track in beats per minute (BPM). In musical terminology, tempo is the speed or pace of a given piece and derives directly from the average beat duration.	Float
+  valence
+    A measure from 0.0 to 1.0 describing the musical positiveness conveyed by a track. Tracks with high valence sound more positive (e.g. happy, cheerful, euphoric), while tracks with low valence sound more negative (e.g. sad, depressed, angry).	Float
+  */
+      if(weatherCard === 'sun'){
+          //values increase based on the amount of sun
+          let valenceLower = 0.5 + widenFrac1;
+          let valenceUpper = valenceLower + normalizedWeather.sun;
+          let danceLower = 0.5 + widenFrac1;
+          let danceUpper = danceLower + normalizedWeather.sun;
+          let tempoLower = 100 + widenNum1;
+          let tempoUpper = tempoLower + normalizedWeather.tempo;
+
+          console.log("\ncompared songs " + count);
+
+            //widen search params
+            ++count;
+            if(count % 20 === 0){
+              widenFrac1 = widenFrac1 + 0.05;
+              widenNum1 = widenNum1 + 2;
+            }
+
+          if(audioFeatures && audioFeatures.data && audioFeatures.data.tempo && audioFeatures.data.tempo > tempoLower && audioFeatures.data.tempo < tempoUpper){
+            //console.log("tempoUpper is " + tempoUpper);
+            //console.log("track tempo is " + audioFeatures.data.tempo);
+
+            if(audioFeatures && audioFeatures.data && audioFeatures.data.valence && audioFeatures.data.valence > valenceLower && audioFeatures.data.valence < valenceUpper){
+              //console.log("valencUpper is " + valenceUpper);
+              //console.log("track valence is " + audioFeatures.data.valence);
+
+              if(audioFeatures && audioFeatures.data && audioFeatures.data.danceability && audioFeatures.data.danceability > danceLower && audioFeatures.data.danceability < danceUpper){
+                //console.log("danceUpper is " + danceUpper);
+                //console.log("track danceability is " + audioFeatures.data.danceability);
+
+                console.log("adding a track!\n")
+                selectedTracks.push(track.uri);
+              }
+            }
+          }
+      }
+
+      //rain: low-mid valence, low-mid tempo, mid-high acoustic
+      else if(weatherCard === 'rain'){
+
+        console.log("adding a track!")
+        selectedTracks.push(track.uri);
+      }
+      //night: low tempo, low energy, mid-high instrumentalness
+      else if(weatherCard === 'night'){
+        let tempoLower = 50;
+        let tempoUpper = tempoLower + normalizedWeather.tempo;
+        let valenceUpper = 0.1;
+        let valenceLower = 0;
+        ++count;
+        console.log("the compared songs is " + count);
+
+        if(audioFeatures && audioFeatures.data && audioFeatures.data.tempo && audioFeatures.data.tempo > tempoLower && audioFeatures.data.tempo < tempoUpper){
+          //console.log("adding a track!");
+          //console.log("tempoUpper is " + tempoUpper);
+          //console.log("track tempo is " + audioFeatures.data.tempo);
+
+          if(audioFeatures && audioFeatures.data && audioFeatures.data.valence && audioFeatures.data.valence > valenceLower && audioFeatures.data.valence < valenceUpper){
+            if(count > 20){
+              valenceUpper = valenceUpper + 0.1;
+              tempoUpper = tempoUpper + 5;
+              tempoLower = tempoLower - 5;
+            }
+            console.log("adding a track!");
+            console.log("track tempo is " + audioFeatures.data.tempo);
+            console.log("track valence is " + audioFeatures.data.valence);
+
+            selectedTracks.push(track.uri);
+          }
+        }
+
+        //else if(audioFeatures.data.valence && audioFeatures.data.valence > tempoLower && audioFeatures.data.valence < tempoUpper){
+        //}
+      }
+      //snow: low-mid tempo, mid valence, low-mid energy, low-mid acoustic
+      else{
+
+        console.log("adding a track!")
+        selectedTracks.push(track.uri);
+      }
+
+      //wind: high tempo, mid-high valence, mid-high danceability
+
+      /*
+      normalizedWeather.clouds = 0.2;
+      normalizedWeather.rain = 0.2;
+      normalizedWeather.snow = 0.2;
 
       // add only the tracks that are close to our nomalizedWeatherValues
       const upperTempoBound = audioFeatures.data.tempo + 30;
       const lowerTempoBound = audioFeatures.data.tempo - 30;
-      if (normalizedWeather.temp > lowerTempoBound && normalizedWeather.temp < upperTempoBound) {
 
+      if (normalizedWeather.temp > lowerTempoBound && normalizedWeather.temp < upperTempoBound) {
         const upperEnergyBound = audioFeatures.data.energy + .5;
         const lowerEnergyBound = audioFeatures.data.energy - .5;
-        if (normalizedWeather.wind > lowerEnergyBound && normalizedWeather.wind < upperEnergyBound) {
 
+        if (normalizedWeather.wind > lowerEnergyBound && normalizedWeather.wind < upperEnergyBound) {
           const upperValenceBound = audioFeatures.data.valence + .5;
           const lowerValenceBound = audioFeatures.data.valence - .5;
-          if (normalizedWeather.sun > lowerValenceBound && normalizedWeather.sun < upperValenceBound) {
 
-            const upperDanceBound = audioFeatures.data.danceability + .5;
-            const lowerDanceBound = audioFeatures.data.danceability - .5;
-            if (normalizedWeather.clouds > lowerDanceBound && normalizedWeather.clouds < upperDanceBound) {
+           if (normalizedWeather.sun > lowerValenceBound && normalizedWeather.sun < upperValenceBound) {
+             const upperDanceBound = audioFeatures.data.danceability + .5;
+             const lowerDanceBound = audioFeatures.data.danceability - .5;
 
-              const upperAcousticBound = audioFeatures.data.acousticness + .5;
-              const lowerAcousticBound = audioFeatures.data.acousticness - .5;
-              if (normalizedWeather.rain > lowerAcousticBound && normalizedWeather.rain < upperAcousticBound) {
+             if (normalizedWeather.clouds > lowerDanceBound && normalizedWeather.clouds < upperDanceBound) {
 
-                const upperInstrumentalBound = audioFeatures.data.instrumentalness + .5;
-                const lowerInstrumentalBound = audioFeatures.data.instrumentalness - .5;
+               const upperAcousticBound = audioFeatures.data.acousticness + .5;
+               const lowerAcousticBound = audioFeatures.data.acousticness - .5;
+
+               if (normalizedWeather.rain > lowerAcousticBound && normalizedWeather.rain < upperAcousticBound) {
+                 const upperInstrumentalBound = audioFeatures.data.instrumentalness + .5;
+                 const lowerInstrumentalBound = audioFeatures.data.instrumentalness - .5;
+
                 if (normalizedWeather.snow > lowerInstrumentalBound && normalizedWeather.snow < upperInstrumentalBound) {
                   console.log("adding a track!")
                   selectedTracks.push(track.uri);
@@ -289,10 +404,11 @@ module.exports = {
           }
         }
       }
+      */
     }
 
     // console.log(selectedTracks.uri);
-    return selectedTracks;
+    //return selectedTracks;
     // call createplaylist. call add to playlist
   },
 
