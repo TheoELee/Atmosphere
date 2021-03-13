@@ -85,27 +85,20 @@ module.exports = {
         return weatherData;
   },
 
-  getTime: function(){
-    //get time for night card
-      var hour = new Date();
-      return hour.getHours();
-  },
-
-	weatherCard: function (parsedWeather, hour) {
-		if (parsedWeather.rain > 0) 
+	weatherCard: function (parsedWeather) {
+		if (parsedWeather.rain > 0) {
       return "rain";
-		else if (parsedWeather.snow > 0) 
+    } else if (parsedWeather.snow > 0) {
       return "snow";
-		else if (parsedWeather.wind) 
+    } else if (parsedWeather.wind) {
       return "wind";
-		else if (parsedWeather.clouds > parsedWeather.sun) 
+    } else if (parsedWeather.clouds > parsedWeather.sun) {
       return "cloud";
-    else if(hour > 18){
+    } else if (parsedWeather.sun > parsedWeather.clouds) {
+      return "sun";
+    } else {
       return "night";
     }
-		else 
-      return "sun";
-
 	},
 
   // Creates a playlist in users Spotify account
