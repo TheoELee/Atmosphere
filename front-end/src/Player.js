@@ -202,14 +202,19 @@ class Player extends Component {
 			loggedIn,
 			error,
 			playing,
+			trackName,
+			artistName,
 		} = this.state;
 
 		return (
 			<div>
 				<Container fluid>
 					<Row>
-						<Col>
-							<div className="player">
+						<Col className="player">
+							<div className="currentTrack">
+								<p>{trackName} - {artistName}</p>
+							</div>
+							<div>
 								{error && <p>Error: {error}</p>}
 
 								{loggedIn ? (
