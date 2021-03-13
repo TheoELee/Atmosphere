@@ -26,18 +26,18 @@ var clouds;
 // app settings
 // in an object so the values can be animated in tweenmax
 const settings = {
-    windSpeed: 2,
+    windSpeed: 1,
     snowCount: 0,
-    cloudHeight: 100,
-    cloudSpace: 30,
-    cloudArch: 50,
+    cloudHeight: 50,
+    cloudSpace: 15,
+    cloudArch: 40,
     renewCheck: 10,
 };
 
 var tickCount = 0;
 var snow = [];
 
-class Snow extends Component {
+class Cloud extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -58,7 +58,7 @@ class Snow extends Component {
         TweenMax.to(summary, 1, {opacity: 0, x: -30, onComplete: this.updateSummaryText, ease: Power4.easeIn})
 
         // snowCount
-        TweenMax.to(settings, 3, {snowCount: 40, ease: Power2.easeInOut});
+        TweenMax.to(settings, 3, {snowCount: 0, ease: Power2.easeInOut});
 
         // 🏃 start animations
         requestAnimationFrame(this.tick);
@@ -188,7 +188,7 @@ class Snow extends Component {
 
 
     updateSummaryText() {
-        summary.html("Snow");
+        summary.html("Cloudy");
         TweenMax.fromTo(summary, 1.5, {x: 30}, {opacity: 1, x: 0, ease: Power4.easeOut});
     }
 
@@ -205,7 +205,8 @@ class Snow extends Component {
         clouds = [
             {group: Snap.select('#cloud1')},
             {group: Snap.select('#cloud2')},
-            {group: Snap.select('#cloud3')}
+            {group: Snap.select('#cloud3')},
+            {group: Snap.select('#cloud4')}
         ]
 
         // Snow
@@ -228,8 +229,10 @@ class Snow extends Component {
         return (
             <div className="background">
                 <div className="container">	
-                    <div id="card" className="weather">
+                    <div id="card" className="weatherCloud">
                         <svg id="inner">
+                            <g id="layer4"></g>
+                            <g id="cloud4" className="cloud"></g>
                             <g id="layer3"></g>
                             <g id="cloud3" className="cloud"></g>
                             <g id="layer2"></g>
@@ -237,7 +240,7 @@ class Snow extends Component {
                             <g id="layer1"></g>
                             <g id="cloud1" className="cloud"></g>
                         </svg>
-                        <div className="details">
+                        <div className="detailsCloud">
                             <div className="temp">
                                 {temp}
                                 <span>f</span></div>
@@ -254,4 +257,4 @@ class Snow extends Component {
     }
 }
 
-export default Snow;
+export default Cloud;
