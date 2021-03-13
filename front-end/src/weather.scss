@@ -155,6 +155,75 @@ body {
 		}
 }
 
+.weatherCloud {
+	background-color: #b5c4c9;
+	transition: background-color $speed ease;
+	
+	#inner {
+		background-color: rgba(255,255,255,1);
+		background: linear-gradient(to bottom, rgba(255,255,255,0.5) 50%, rgba(255,255,255,0) 100%);
+	}
+	
+	.cloud {
+		transition: fill $speed ease;
+	}
+		
+	#cloud1 {
+		fill: #d5cbcb;
+	}
+
+	#cloud2 {
+		fill: #c7c4c4;
+	}
+
+	#cloud3 { 
+		fill: #f3e1e1;
+	}
+
+	#cloud4 { 
+		fill: #d8cece;
+	}
+}
+
+.detailsCloud {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	padding: 16px 20px;
+	color: #7d8088;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	transition: color $speed ease;
+
+	.right {
+		text-align: right;
+	}
+		
+	#date {
+		// color: #4f5971;
+		margin: 4px 0;
+	}
+		
+	#summary {
+		font-weight: 600;
+		font-size: 22px;
+	}
+
+	.temp {
+		font-size: 60px;
+		line-height: 60px;
+
+		span {
+			font-size: 18px;
+			line-height: 30px;
+			vertical-align: top;
+			margin-left: 5px;
+		}
+			
+	}
+}
 
 .weather {
 	background-color: #2196f3;
