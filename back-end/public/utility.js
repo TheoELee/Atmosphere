@@ -379,7 +379,7 @@ module.exports = {
 
         //widen search params based on number of comparisons
         ++count;
-        if(count % 20 === 0){
+        if(count % 10 === 0){
           widenFrac1 = widenFrac1 + 0.05;
           widenNum1 = widenNum1 + 2;
         }
