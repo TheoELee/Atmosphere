@@ -276,10 +276,8 @@ module.exports = {
 
       console.log("compared songs " + count);
 
-      //build a playlist based on the weatherCard
       //sun: high valence, mid-high tempo, high danceability
       //As the sun percentage and temperature increases the tempo, valence, and danceability increases 
-      ///SUUUUUUUUUUUUUUUUNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
       if(weatherCard === 'sun'){
           //values increase based on the amount of sun
           let valenceLower = 0.5;
