@@ -103,7 +103,7 @@ module.exports = {
     }
     //change back to sun
 		else 
-      return "sun";
+      return "cloud";
 
 	},
 
@@ -444,7 +444,9 @@ module.exports = {
       //The more cloud and the higher the temp, the higher the attributes
       else if(weatherCard === 'cloud'){
         let valenceLower = 0.0;
-        let valenceUpper = valenceLower + normalizedWeather.cloud + widenFrac1;
+        //change back
+        //let valenceUpper = valenceLower + normalizedWeather.cloud + widenFrac1;
+        let valenceUpper = valenceLower + 0.5 + widenFrac1;
         let tempoLower = 50;
         let tempoUpper = tempoLower + normalizedWeather.tempo + widenNum1;
         let energyLower = 0;
@@ -458,13 +460,12 @@ module.exports = {
 
         //widen search params based on number of comparisons
         ++count;
-        if(count % 10 === 0){
+        if(count % 5 === 0){
           widenFrac1 = widenFrac1 + 0.08;
           if(instruLower > 0)
-            widenFrac2 = widenFrac2 - 0.03;
-          widenNum1 = widenNum1 + 2;
+            widenFrac2 = widenFrac2 - 0.05;
+          widenNum1 = widenNum1 + 3;
         }
-
           if(audioFeatures && audioFeatures.data && audioFeatures.data.tempo && audioFeatures.data.tempo > tempoLower && audioFeatures.data.tempo < tempoUpper){
 
             if(audioFeatures && audioFeatures.data && audioFeatures.data.valence && audioFeatures.data.valence > valenceLower && audioFeatures.data.valence < valenceUpper){
@@ -474,8 +475,13 @@ module.exports = {
                 if(audioFeatures && audioFeatures.data && audioFeatures.data.instrumentalness && audioFeatures.data.instrumentalness > instruLower && audioFeatures.data.instrumentalness < instruUpper){
                   console.log("adding a track from cloud seed!\n")
                   selectedTracks.push(track.uri);
-                  }
                 }
+
+                else if(count % 25 === 0){
+                  console.log("adding a track from cloud seed!\n")
+                  selectedTracks.push(track.uri);
+                }
+              }
             }
           }
       }
