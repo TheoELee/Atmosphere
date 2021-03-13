@@ -15,6 +15,7 @@ router.get("/", function (req, res) {
 	// your application requests refresh and access tokens
 	// after checking the state parameter
 
+	let ip_address = req.headers["x-forwarded-for"]|| req.connection.remoteAddress;
 	var code = req.query.code || null;
 	var state = req.query.state || null;
 	var storedState = req.cookies ? req.cookies[stateKey] : null;
@@ -59,7 +60,7 @@ router.get("/", function (req, res) {
 				const userId = user.data.id;
 
 				//get the zipCode for the weather api
-				const zipCode = await utility.getZip();
+				const zipCode = await utility.getZip(ip_address);
 
 				//use the zipcode to get the weather Data
 				const weather = await utility.getWeather(zipCode);

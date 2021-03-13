@@ -12,7 +12,9 @@ let normalizedWeather = {
 }
 
 module.exports = {
-  getZip: async function () {
+  getZip: async function (ip_address) {
+  const urlLocation = `http://ip-api.com/json/${ip_address}`; //URL for ip-api (ip location api)
+
     let response = await axios.get(urlLocation);
     //console.log("the response from axios is: " +response.data.zip);
     return response.data.zip;
