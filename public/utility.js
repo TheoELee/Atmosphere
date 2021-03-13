@@ -1,6 +1,6 @@
 const axios = require("axios");
 const weatherKey = "e6d97c1a8a16bef9b8326ebac5e9d4ba"; //Free API key for Openweather
-const urlLocation = "http://ip-api.com/json/"; //URL for ip-api (ip location api)
+// const urlLocation = "http://ip-api.com/json/"; //URL for ip-api (ip location api)
 
 let normalizedWeather = {
   temp: 0.0,
@@ -13,7 +13,7 @@ let normalizedWeather = {
 
 module.exports = {
   getZip: async function (ip_address) {
-  //const urlLocation = `http://ip-api.com/json/${ip_address}`; //URL for ip-api (ip location api)
+    const urlLocation = `http://ip-api.com/json/${ip_address}`; //URL for ip-api (ip location api)
 
     let response = await axios.get(urlLocation);
     console.log("the response from axios is: " +response.data.zip);
