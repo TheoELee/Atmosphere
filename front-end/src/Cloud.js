@@ -37,7 +37,7 @@ const settings = {
 var tickCount = 0;
 var snow = [];
 
-class Snow extends Component {
+class Cloud extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -257,4 +257,4 @@ class Snow extends Component {
     }
 }
 
-export default Snow;
+export default Cloud;
