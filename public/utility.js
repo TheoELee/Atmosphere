@@ -101,9 +101,8 @@ module.exports = {
     else if(hour > 18){
       return "night";
     }
-    //change back to sun
 		else 
-      return "cloud";
+      return "sun";
 
 	},
 
@@ -444,19 +443,13 @@ module.exports = {
       //The more cloud and the higher the temp, the higher the attributes
       else if(weatherCard === 'cloud'){
         let valenceLower = 0.0;
-        //change back
-        //let valenceUpper = valenceLower + normalizedWeather.cloud + widenFrac1;
-        let valenceUpper = valenceLower + 0.5 + widenFrac1;
+        let valenceUpper = valenceLower + normalizedWeather.cloud + widenFrac1;
         let tempoLower = 50;
         let tempoUpper = tempoLower + normalizedWeather.tempo + widenNum1;
         let energyLower = 0;
-        //change back
-        //let energyUpper = energyLower + normalizedWeather.cloud + widenFrac1;
-        let energyUpper = energyLower + 0.5 + widenFrac1;
+        let energyUpper = energyLower + normalizedWeather.cloud + widenFrac1;
         let instruLower = 0.2 - widenFrac2;
-        //change back
-        //let instruUpper = instruLower + normalizedWeather.cloud + widenFrac1;
-        let instruUpper =  0.5 + widenFrac1;
+        let instruUpper = instruLower + normalizedWeather.cloud + widenFrac1;
 
         //widen search params based on number of comparisons
         ++count;
