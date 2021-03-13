@@ -278,6 +278,8 @@ module.exports = {
 
       //sun: high valence, mid-high tempo, high danceability
       //As the sun percentage and temperature increases the tempo, valence, and danceability increases 
+
+      //SUN CARD
       if(weatherCard === 'sun'){
           //values increase based on the amount of sun
           let valenceLower = 0.5;
@@ -308,6 +310,7 @@ module.exports = {
 
       //rain: low-mid valence, low-mid tempo, mid-high acoustic
      //The more rain and the higher the temp, the higher the attributes
+     //RAIN
       else if(weatherCard === 'rain'){
         let valenceLower = 0.0;
         let valenceUpper = valenceLower + normalizedWeather.sun + widenFrac1;
@@ -337,6 +340,7 @@ module.exports = {
 
       //windy => high tempo, mid-high valence, mid-high danceability
      //The more wind and the higher the temp, the higher the attributes
+     //WIND
       else if(weatherCard === 'wind'){
         let valenceLower = 0.5;
         let valenceUpper = valenceLower + normalizedWeather.sun + widenFrac1;
@@ -366,19 +370,20 @@ module.exports = {
 
       //night: low tempo, low energy, mid-high instrumentalness
       //Higher temps and less clouds = higher values
+      //if no favorite artists in spotify, generates random slow instrumental songs (e.g., 528 Hz Release Inner Conflict & Struggle)
       else if(weatherCard === 'night'){
         let tempoLower = 50 + widenNum1;
         let tempoUpper = tempoLower + normalizedWeather.tempo + widenNum1;
         let energyLower = 0;
         let energyUpper = energyLower + normalizedWeather.sun + widenFrac1;
         //the closer to 1 the more likely songs contain only instruments
-        let instruLower = 0.3;
+        let instruLower = 0.3 - widenFrac1;
         let instruUpper = instruLower + normalizedWeather.sun + widenFrac1;
 
         //widen search params based on number of comparisons
         ++count;
         if(count % 10 === 0){
-          widenFrac1 = widenFrac1 + 0.05;
+          widenFrac1 = widenFrac1 + 0.03;
           widenNum1 = widenNum1 + 2;
         }
 
@@ -387,8 +392,8 @@ module.exports = {
           if(audioFeatures && audioFeatures.data && audioFeatures.data.energy && audioFeatures.data.energy > energyLower && audioFeatures.data.energy < energyUpper){
 
             if(audioFeatures && audioFeatures.data && audioFeatures.data.instrumentalness && audioFeatures.data.instrumentalness > instruLower && audioFeatures.data.instrumentalness < instruUpper){
-
-             console.log("adding a track!");
+            
+             console.log("adding a track from the night seed!");
              selectedTracks.push(track.uri);
            }
           }
@@ -429,7 +434,8 @@ module.exports = {
             }
           }
       }
-
+      //cloud: low-mid tempo, low valence, low energy, low instrumental
+      //The more cloud and the higher the temp, the higher the attributes
       else if(weatherCard === 'cloud'){
         let valenceLower = 0.0;
         let valenceUpper = valenceLower + normalizedWeather.cloud + widenFrac1;
@@ -442,7 +448,7 @@ module.exports = {
 
         //widen search params based on number of comparisons
         ++count;
-        if(count % 20 === 0){
+        if(count % 10 === 0){
           widenFrac1 = widenFrac1 + 0.08;
           widenNum1 = widenNum1 + 2;
         }
