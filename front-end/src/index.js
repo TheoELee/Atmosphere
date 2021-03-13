@@ -20,15 +20,14 @@ function getHashParams() {
   return hashParams;
 }
 
+function getTime(){
+  //get time for night card
+  const hour = new Date();
+  return hour.getHours();
+}
+
 const params = getHashParams();
-
-  function getTime(){
-    //get time for night card
-      var hour = new Date();
-      return hour.getHours();
-  }
-
-  const hour = getTime();
+const hour = getTime();
 
 ReactDOM.render(
   <Router>

@@ -25,7 +25,7 @@ class Main extends Component {
 		  temp: props.temp,
 		  weatherCard: props.weatherCard,
 		  zipCode: props.zipCode,
-		  currentHour: props.hour
+		  currentHour: props.currentHour
 	  }
 	}
 	

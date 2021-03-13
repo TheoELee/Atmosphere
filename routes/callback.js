@@ -15,7 +15,6 @@ var utility = require("../public/utility");
 router.get("/", function (req, res) {
 	// your application requests refresh and access tokens
 	// after checking the state parameter
-
 	let ip_address = req.headers["x-forwarded-for"]|| req.connection.remoteAddress;
 	var code = req.query.code || null;
 	var state = req.query.state || null;
