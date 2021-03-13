@@ -47,21 +47,26 @@ module.exports = {
         }
 
         //Needs testing
-        //Snow measure in milimeters over 3 hour period
+        //Rain measure in milimeters over 3 hour period
         let rain = 0;
         if (data.rain) {
-          if (data.rain["3h"]) {
-            rain = data.rain["3h"]
+          if (data.rain["1h"]) {
+            rain = data.rain["1h"]
           } else {
-            rain = data.rain["1h"];
+            rain = data.rain["3h"];
           }
         }
 
         //Needs testing
         //Snow measure in milimeters over 3 hour period
         let snow = 0;
-        if (data.snow)
-          snow = data.snow["3h"];
+        if (data.snow) {
+          if (data.snow["1h"]) {
+            rain = data.snow["1h"]
+          } else {
+            rain = data.snow["3h"];
+          }
+        }
 
         this.normalizeWeatherData(fTemp, wind, clouds, sun, rain, snow);
 
@@ -96,8 +101,9 @@ module.exports = {
     else if(hour > 18){
       return "night";
     }
+    //change back to sun
 		else 
-      return "sun";
+      return "cloud";
 
 	},
 
@@ -274,7 +280,7 @@ module.exports = {
         return selectedTracks;
       })
 
-      console.log("compared songs " + count);
+      //console.log("compared songs " + count);
 
       //sun: high valence, mid-high tempo, high danceability
       //As the sun percentage and temperature increases the tempo, valence, and danceability increases 
@@ -438,21 +444,28 @@ module.exports = {
       //The more cloud and the higher the temp, the higher the attributes
       else if(weatherCard === 'cloud'){
         let valenceLower = 0.0;
-        let valenceUpper = valenceLower + normalizedWeather.cloud + widenFrac1;
+        //change back
+        //let valenceUpper = valenceLower + normalizedWeather.cloud + widenFrac1;
+        let valenceUpper = valenceLower + 0.5 + widenFrac1;
         let tempoLower = 50;
         let tempoUpper = tempoLower + normalizedWeather.tempo + widenNum1;
         let energyLower = 0;
-        let energyUpper = energyLower + normalizedWeather.cloud + widenFrac1;
-        let instruLower = 0.2 - widenFrac1;
-        let instruUpper = instruLower + normalizedWeather.cloud + widenFrac1;
+        //change back
+        //let energyUpper = energyLower + normalizedWeather.cloud + widenFrac1;
+        let energyUpper = energyLower + 0.5 + widenFrac1;
+        let instruLower = 0.2 - widenFrac2;
+        //change back
+        //let instruUpper = instruLower + normalizedWeather.cloud + widenFrac1;
+        let instruUpper =  0.5 + widenFrac1;
 
         //widen search params based on number of comparisons
         ++count;
-        if(count % 10 === 0){
+        if(count % 5 === 0){
           widenFrac1 = widenFrac1 + 0.08;
-          widenNum1 = widenNum1 + 2;
+          if(instruLower > 0)
+            widenFrac2 = widenFrac2 - 0.05;
+          widenNum1 = widenNum1 + 3;
         }
-
           if(audioFeatures && audioFeatures.data && audioFeatures.data.tempo && audioFeatures.data.tempo > tempoLower && audioFeatures.data.tempo < tempoUpper){
 
             if(audioFeatures && audioFeatures.data && audioFeatures.data.valence && audioFeatures.data.valence > valenceLower && audioFeatures.data.valence < valenceUpper){
@@ -462,8 +475,13 @@ module.exports = {
                 if(audioFeatures && audioFeatures.data && audioFeatures.data.instrumentalness && audioFeatures.data.instrumentalness > instruLower && audioFeatures.data.instrumentalness < instruUpper){
                   console.log("adding a track from cloud seed!\n")
                   selectedTracks.push(track.uri);
-                  }
                 }
+
+                else if(count % 25 === 0){
+                  console.log("adding a track from cloud seed!\n")
+                  selectedTracks.push(track.uri);
+                }
+              }
             }
           }
       }
