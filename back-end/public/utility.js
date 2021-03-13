@@ -93,7 +93,7 @@ module.exports = {
       return "wind";
 		else if (parsedWeather.clouds > parsedWeather.sun) 
       return "cloud";
-    else if(hour > 19){
+    else if(hour > 18){
       return "night";
     }
 		else 
@@ -237,14 +237,16 @@ module.exports = {
     widenFrac2 = 0.0;
     widenNum1 = 0;
     widenNum2 = 0;
-    const avgUSTemp = 54;
-    const avgTempo = 116;
     normalizedWeather.tempo = temp;
-    normalizedWeather.temp = (temp / avgUSTemp) * avgTempo;
     normalizedWeather.wind = wind / 10;
     normalizedWeather.clouds = clouds / 100;
+
+    //more variance for attributes.
     normalizedWeather.sun = sun / 100 / 2;
-    normalizedWeather.rain = rain / 100;
+
+    //Very Heavy Rain = 8mm per hour
+    normalizedWeather.rain = rain / 100 + 0.2;
+    //Highest recorded snowfall is 3.5 inches an hour = 88.9mm
     normalizedWeather.snow = snow / 100;
   },
 
@@ -272,47 +274,32 @@ module.exports = {
         return selectedTracks;
       })
 
-      //build a playlist based on the weatherCard
+      console.log("compared songs " + count);
+
       //sun: high valence, mid-high tempo, high danceability
-      /*
-  danceability
-    Danceability describes how suitable a track is for dancing based on a combination of musical elements including tempo, rhythm stability, beat strength, and overall regularity. A value of 0.0 is least danceable and 1.0 is most danceable.	Float
-  tempo
-    The overall estimated tempo of a track in beats per minute (BPM). In musical terminology, tempo is the speed or pace of a given piece and derives directly from the average beat duration.	Float
-  valence
-    A measure from 0.0 to 1.0 describing the musical positiveness conveyed by a track. Tracks with high valence sound more positive (e.g. happy, cheerful, euphoric), while tracks with low valence sound more negative (e.g. sad, depressed, angry).	Float
-  */
+      //As the sun percentage and temperature increases the tempo, valence, and danceability increases 
       if(weatherCard === 'sun'){
           //values increase based on the amount of sun
-          let valenceLower = 0.5 + widenFrac1;
-          let valenceUpper = valenceLower + normalizedWeather.sun;
-          let danceLower = 0.5 + widenFrac1;
-          let danceUpper = danceLower + normalizedWeather.sun;
-          let tempoLower = 100 + widenNum1;
-          let tempoUpper = tempoLower + normalizedWeather.tempo;
+          let valenceLower = 0.5;
+          let valenceUpper = valenceLower + normalizedWeather.sun + widenFrac1;
+          let danceLower = 0.5;
+          let danceUpper = danceLower + normalizedWeather.sun + widenFrac1;
+          let tempoLower = 100;
+          let tempoUpper = tempoLower + normalizedWeather.tempo + widenNum1;
 
-          console.log("\ncompared songs " + count);
-
-            //widen search params
-            ++count;
-            if(count % 20 === 0){
-              widenFrac1 = widenFrac1 + 0.05;
-              widenNum1 = widenNum1 + 2;
-            }
+          //widen search params based on number of comparisons
+          ++count;
+          if(count % 20 === 0){
+            widenFrac1 = widenFrac1 + 0.05;
+            widenNum1 = widenNum1 + 2;
+          }
 
           if(audioFeatures && audioFeatures.data && audioFeatures.data.tempo && audioFeatures.data.tempo > tempoLower && audioFeatures.data.tempo < tempoUpper){
-            //console.log("tempoUpper is " + tempoUpper);
-            //console.log("track tempo is " + audioFeatures.data.tempo);
 
             if(audioFeatures && audioFeatures.data && audioFeatures.data.valence && audioFeatures.data.valence > valenceLower && audioFeatures.data.valence < valenceUpper){
-              //console.log("valencUpper is " + valenceUpper);
-              //console.log("track valence is " + audioFeatures.data.valence);
 
               if(audioFeatures && audioFeatures.data && audioFeatures.data.danceability && audioFeatures.data.danceability > danceLower && audioFeatures.data.danceability < danceUpper){
-                //console.log("danceUpper is " + danceUpper);
-                //console.log("track danceability is " + audioFeatures.data.danceability);
-
-                console.log("adding a track!\n")
+                console.log("adding a track from sun seed!\n")
                 selectedTracks.push(track.uri);
               }
             }
@@ -320,96 +307,168 @@ module.exports = {
       }
 
       //rain: low-mid valence, low-mid tempo, mid-high acoustic
+     //The more rain and the higher the temp, the higher the attributes
       else if(weatherCard === 'rain'){
-
-        console.log("adding a track!")
-        selectedTracks.push(track.uri);
-      }
-      //night: low tempo, low energy, mid-high instrumentalness
-      else if(weatherCard === 'night'){
+        let valenceLower = 0.0;
+        let valenceUpper = valenceLower + normalizedWeather.sun + widenFrac1;
         let tempoLower = 50;
-        let tempoUpper = tempoLower + normalizedWeather.tempo;
-        let valenceUpper = 0.1;
-        let valenceLower = 0;
+        let tempoUpper = tempoLower + normalizedWeather.tempo + widenNum1;
+        let acousticLower = 0.5;
+        let acousticUpper = acousticLower + normalizedWeather.rain + widenFrac1;
+
+        //widen search params based on number of comparisons
         ++count;
-        console.log("the compared songs is " + count);
-
-        if(audioFeatures && audioFeatures.data && audioFeatures.data.tempo && audioFeatures.data.tempo > tempoLower && audioFeatures.data.tempo < tempoUpper){
-          //console.log("adding a track!");
-          //console.log("tempoUpper is " + tempoUpper);
-          //console.log("track tempo is " + audioFeatures.data.tempo);
-
-          if(audioFeatures && audioFeatures.data && audioFeatures.data.valence && audioFeatures.data.valence > valenceLower && audioFeatures.data.valence < valenceUpper){
-            if(count > 20){
-              valenceUpper = valenceUpper + 0.1;
-              tempoUpper = tempoUpper + 5;
-              tempoLower = tempoLower - 5;
-            }
-            console.log("adding a track!");
-            console.log("track tempo is " + audioFeatures.data.tempo);
-            console.log("track valence is " + audioFeatures.data.valence);
-
-            selectedTracks.push(track.uri);
-          }
+        if(count % 20 === 0){
+          widenFrac1 = widenFrac1 + 0.05;
+          widenNum1 = widenNum1 + 2;
         }
 
-        //else if(audioFeatures.data.valence && audioFeatures.data.valence > tempoLower && audioFeatures.data.valence < tempoUpper){
-        //}
+          if(audioFeatures && audioFeatures.data && audioFeatures.data.tempo && audioFeatures.data.tempo > tempoLower && audioFeatures.data.tempo < tempoUpper){
+
+            if(audioFeatures && audioFeatures.data && audioFeatures.data.valence && audioFeatures.data.valence > valenceLower && audioFeatures.data.valence < valenceUpper){
+
+              if(audioFeatures && audioFeatures.data && audioFeatures.data.acousticness && audioFeatures.data.acousticness > acousticLower && audioFeatures.data.acousticness < acousticUpper){
+                console.log("adding a track from rain seed!\n")
+                selectedTracks.push(track.uri);
+              }
+            }
+          }
       }
+
+      //windy => high tempo, mid-high valence, mid-high danceability
+     //The more wind and the higher the temp, the higher the attributes
+      else if(weatherCard === 'wind'){
+        let valenceLower = 0.5;
+        let valenceUpper = valenceLower + normalizedWeather.sun + widenFrac1;
+        let tempoLower = 100;
+        let tempoUpper = tempoLower + normalizedWeather.wind + widenNum1;
+        let danceLower = 0.5;
+        let danceUpper = danceLower + normalizedWeather.sun + widenFrac1;
+
+        //widen search params based on number of comparisons
+        ++count;
+        if(count % 20 === 0){
+          widenFrac1 = widenFrac1 + 0.05;
+          widenNum1 = widenNum1 + 2;
+        }
+
+          if(audioFeatures && audioFeatures.data && audioFeatures.data.tempo && audioFeatures.data.tempo > tempoLower && audioFeatures.data.tempo < tempoUpper){
+
+            if(audioFeatures && audioFeatures.data && audioFeatures.data.valence && audioFeatures.data.valence > valenceLower && audioFeatures.data.valence < valenceUpper){
+
+              if(audioFeatures && audioFeatures.data && audioFeatures.data.danceability && audioFeatures.data.danceability > danceLower && audioFeatures.data.danceability < danceUpper){
+                console.log("adding a track from wind seed!\n")
+                selectedTracks.push(track.uri);
+              }
+            }
+          }
+      }
+
+      //night: low tempo, low energy, mid-high instrumentalness
+      //Higher temps and less clouds = higher values
+      else if(weatherCard === 'night'){
+        let tempoLower = 50 + widenNum1;
+        let tempoUpper = tempoLower + normalizedWeather.tempo + widenNum1;
+        let energyLower = 0;
+        let energyUpper = energyLower + normalizedWeather.sun + widenFrac1;
+        //the closer to 1 the more likely songs contain only instruments
+        let instruLower = 0.3;
+        let instruUpper = instruLower + normalizedWeather.sun + widenFrac1;
+
+        //widen search params based on number of comparisons
+        ++count;
+        if(count % 10 === 0){
+          widenFrac1 = widenFrac1 + 0.05;
+          widenNum1 = widenNum1 + 2;
+        }
+
+        if(audioFeatures && audioFeatures.data && audioFeatures.data.tempo && audioFeatures.data.tempo > tempoLower && audioFeatures.data.tempo < tempoUpper){
+
+          if(audioFeatures && audioFeatures.data && audioFeatures.data.energy && audioFeatures.data.energy > energyLower && audioFeatures.data.energy < energyUpper){
+
+            if(audioFeatures && audioFeatures.data && audioFeatures.data.instrumentalness && audioFeatures.data.instrumentalness > instruLower && audioFeatures.data.instrumentalness < instruUpper){
+
+             console.log("adding a track!");
+             selectedTracks.push(track.uri);
+           }
+          }
+        }
+      }
+
       //snow: low-mid tempo, mid valence, low-mid energy, low-mid acoustic
-      else{
+     //The more snow and the higher the temp, the higher the attributes
+      else if(weatherCard === 'snow'){
+        let valenceLower = 0.0;
+        let valenceUpper = valenceLower + normalizedWeather.sun + widenFrac1;
+        let tempoLower = 50;
+        let tempoUpper = tempoLower + normalizedWeather.tempo + widenNum1;
+        let acousticLower = 0.4;
+        let acousticUpper = acousticLower + normalizedWeather.snow + widenFrac1;
+        let energyLower = 0;
+        let energyUpper = energyLower + normalizedWeather.sun + widenFrac1;
 
-        console.log("adding a track!")
-        selectedTracks.push(track.uri);
-      }
+        //widen search params based on number of comparisons
+        ++count;
+        if(count % 20 === 0){
+          widenFrac1 = widenFrac1 + 0.05;
+          widenNum1 = widenNum1 + 2;
+        }
 
-      //wind: high tempo, mid-high valence, mid-high danceability
+          if(audioFeatures && audioFeatures.data && audioFeatures.data.tempo && audioFeatures.data.tempo > tempoLower && audioFeatures.data.tempo < tempoUpper){
 
-      /*
-      normalizedWeather.clouds = 0.2;
-      normalizedWeather.rain = 0.2;
-      normalizedWeather.snow = 0.2;
+            if(audioFeatures && audioFeatures.data && audioFeatures.data.valence && audioFeatures.data.valence > valenceLower && audioFeatures.data.valence < valenceUpper){
 
-      // add only the tracks that are close to our nomalizedWeatherValues
-      const upperTempoBound = audioFeatures.data.tempo + 30;
-      const lowerTempoBound = audioFeatures.data.tempo - 30;
+              if(audioFeatures && audioFeatures.data && audioFeatures.data.acousticness && audioFeatures.data.acousticness > acousticLower && audioFeatures.data.acousticness < acousticUpper){
 
-      if (normalizedWeather.temp > lowerTempoBound && normalizedWeather.temp < upperTempoBound) {
-        const upperEnergyBound = audioFeatures.data.energy + .5;
-        const lowerEnergyBound = audioFeatures.data.energy - .5;
+                if(audioFeatures && audioFeatures.data && audioFeatures.data.energy && audioFeatures.data.energy > energyLower && audioFeatures.data.energy < energyUpper){
 
-        if (normalizedWeather.wind > lowerEnergyBound && normalizedWeather.wind < upperEnergyBound) {
-          const upperValenceBound = audioFeatures.data.valence + .5;
-          const lowerValenceBound = audioFeatures.data.valence - .5;
-
-           if (normalizedWeather.sun > lowerValenceBound && normalizedWeather.sun < upperValenceBound) {
-             const upperDanceBound = audioFeatures.data.danceability + .5;
-             const lowerDanceBound = audioFeatures.data.danceability - .5;
-
-             if (normalizedWeather.clouds > lowerDanceBound && normalizedWeather.clouds < upperDanceBound) {
-
-               const upperAcousticBound = audioFeatures.data.acousticness + .5;
-               const lowerAcousticBound = audioFeatures.data.acousticness - .5;
-
-               if (normalizedWeather.rain > lowerAcousticBound && normalizedWeather.rain < upperAcousticBound) {
-                 const upperInstrumentalBound = audioFeatures.data.instrumentalness + .5;
-                 const lowerInstrumentalBound = audioFeatures.data.instrumentalness - .5;
-
-                if (normalizedWeather.snow > lowerInstrumentalBound && normalizedWeather.snow < upperInstrumentalBound) {
-                  console.log("adding a track!")
+                  console.log("adding a track from snow seed!\n")
                   selectedTracks.push(track.uri);
                 }
               }
             }
           }
-        }
       }
-      */
-    }
 
-    // console.log(selectedTracks.uri);
-    //return selectedTracks;
-    // call createplaylist. call add to playlist
+      else if(weatherCard === 'cloud'){
+        let valenceLower = 0.0;
+        let valenceUpper = valenceLower + normalizedWeather.cloud + widenFrac1;
+        let tempoLower = 50;
+        let tempoUpper = tempoLower + normalizedWeather.tempo + widenNum1;
+        let energyLower = 0;
+        let energyUpper = energyLower + normalizedWeather.cloud + widenFrac1;
+        let instruLower = 0.2 - widenFrac1;
+        let instruUpper = instruLower + normalizedWeather.cloud + widenFrac1;
+
+        //widen search params based on number of comparisons
+        ++count;
+        if(count % 20 === 0){
+          widenFrac1 = widenFrac1 + 0.08;
+          widenNum1 = widenNum1 + 2;
+        }
+
+          if(audioFeatures && audioFeatures.data && audioFeatures.data.tempo && audioFeatures.data.tempo > tempoLower && audioFeatures.data.tempo < tempoUpper){
+
+            if(audioFeatures && audioFeatures.data && audioFeatures.data.valence && audioFeatures.data.valence > valenceLower && audioFeatures.data.valence < valenceUpper){
+
+              if(audioFeatures && audioFeatures.data && audioFeatures.data.energy && audioFeatures.data.energy > energyLower && audioFeatures.data.energy < energyUpper){
+
+                if(audioFeatures && audioFeatures.data && audioFeatures.data.instrumentalness && audioFeatures.data.instrumentalness > instruLower && audioFeatures.data.instrumentalness < instruUpper){
+                  console.log("adding a track from cloud seed!\n")
+                  selectedTracks.push(track.uri);
+                  }
+                }
+            }
+          }
+      }
+
+      else{
+        console.log("unknow weather Error");
+        console.log("adding a track!")
+        selectedTracks.push(track.uri);
+      }
+
+    }
   },
 
   shuffle: function(tracks) {
@@ -426,23 +485,11 @@ module.exports = {
         tracks[currentIndex] = tracks[randomIndex];
         tracks[randomIndex] = temporaryValue;
       }
-    
       return tracks;
   }
 };
 
-
 /* 
-- Normalize the weather values, and use those weather values to parse through the songs
-
- but I already randomized the songs..? so do I need to do that? maybe not
-
- If I normalize the values, I then go through the songs array, sort the array based on the 
- scores and then grab the top 25
-
-
-
-
 KEY	TYPE
 acousticness
   A confidence measure from 0.0 to 1.0 of whether the track is acoustic. 1.0 represents high confidence the track is acoustic.	Float
