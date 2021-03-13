@@ -101,6 +101,7 @@ module.exports = {
     else if(hour > 18){
       return "night";
     }
+    //change back to sun
 		else 
       return "sun";
 
@@ -447,14 +448,20 @@ module.exports = {
         let tempoLower = 50;
         let tempoUpper = tempoLower + normalizedWeather.tempo + widenNum1;
         let energyLower = 0;
-        let energyUpper = energyLower + normalizedWeather.cloud + widenFrac1;
-        let instruLower = 0.2 - widenFrac1;
-        let instruUpper = instruLower + normalizedWeather.cloud + widenFrac1;
+        //change back
+        //let energyUpper = energyLower + normalizedWeather.cloud + widenFrac1;
+        let energyUpper = energyLower + 0.5 + widenFrac1;
+        let instruLower = 0.2 - widenFrac2;
+        //change back
+        //let instruUpper = instruLower + normalizedWeather.cloud + widenFrac1;
+        let instruUpper =  0.5 + widenFrac1;
 
         //widen search params based on number of comparisons
         ++count;
         if(count % 10 === 0){
           widenFrac1 = widenFrac1 + 0.08;
+          if(instruLower > 0)
+            widenFrac2 = widenFrac2 - 0.03;
           widenNum1 = widenNum1 + 2;
         }
 
