@@ -47,21 +47,26 @@ module.exports = {
         }
 
         //Needs testing
-        //Snow measure in milimeters over 3 hour period
+        //Rain measure in milimeters over 3 hour period
         let rain = 0;
         if (data.rain) {
-          if (data.rain["3h"]) {
-            rain = data.rain["3h"]
+          if (data.rain["1h"]) {
+            rain = data.rain["1h"]
           } else {
-            rain = data.rain["1h"];
+            rain = data.rain["3h"];
           }
         }
 
         //Needs testing
         //Snow measure in milimeters over 3 hour period
         let snow = 0;
-        if (data.snow)
-          snow = data.snow["3h"];
+        if (data.snow) {
+          if (data.snow["1h"]) {
+            rain = data.snow["1h"]
+          } else {
+            rain = data.snow["3h"];
+          }
+        }
 
         this.normalizeWeatherData(fTemp, wind, clouds, sun, rain, snow);
 
@@ -274,7 +279,7 @@ module.exports = {
         return selectedTracks;
       })
 
-      console.log("compared songs " + count);
+      //console.log("compared songs " + count);
 
       //sun: high valence, mid-high tempo, high danceability
       //As the sun percentage and temperature increases the tempo, valence, and danceability increases 
