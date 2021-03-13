@@ -1,1 +1,13 @@
-{}
+{
+    "scripts": {
+        "front-end-install": "npm install --prefix front-end",
+        "start": "node app.js",
+        "server": "nodemon app.js",
+        "client": "npm start --prefix front-end",
+        "dev": "concurrently \"npm run back-end\" \"npm run front-end\"",
+        "heroku-postbuild":      "NPM_CONFIG_PRODUCTION=false npm install --prefix front-end        && npm run build --prefix front-end"  },
+    },
+    "dependencies": {
+        "concurrently": "^6.0.0"
+    }
+}

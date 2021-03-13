@@ -3,6 +3,11 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "front-end-install": "npm install --prefix front-end",    
+    "start": "nodemon index.js",    
+    "front-end": "npm start --prefix front-end",    
+    "dev": "concurrently \"npm run server\" \"npm run front-end\"",
+
     "start": "nodemon ./bin/www",
     "debug": "set DEBUG=api:server & node --inspect ./bin/www"
   },
