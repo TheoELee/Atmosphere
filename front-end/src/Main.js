@@ -32,7 +32,7 @@ class Main extends Component {
 	getWeatherCard() {
 		const { weatherCard, temp, currentHour } = this.state;
 
-		if(currentHour > 19 && currentHour < 4){
+		if(currentHour > 19 || currentHour < 4){
 			return <Night temp = {temp}/>;
 		}
 
