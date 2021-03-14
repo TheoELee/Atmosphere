@@ -300,6 +300,10 @@ module.exports = {
                 console.log("adding a track from sun seed!\n")
                 selectedTracks.push(track.uri);
               }
+              else if(count % 100 === 0){
+                console.log("adding a track from night seed!\n")
+                selectedTracks.push(track.uri);
+              }
             }
           }
       }
@@ -330,6 +334,10 @@ module.exports = {
                 console.log("adding a track from rain seed!\n")
                 selectedTracks.push(track.uri);
               }
+              else if(count % 100 === 0){
+                console.log("adding a track from night seed!\n")
+                selectedTracks.push(track.uri);
+              }
             }
           }
       }
@@ -358,6 +366,10 @@ module.exports = {
 
               if(audioFeatures && audioFeatures.data && audioFeatures.data.danceability && audioFeatures.data.danceability > danceLower && audioFeatures.data.danceability < danceUpper){
                 console.log("adding a track from wind seed!\n")
+                selectedTracks.push(track.uri);
+              }
+              else if(count % 100 === 0){
+                console.log("adding a track from night seed!\n")
                 selectedTracks.push(track.uri);
               }
             }
@@ -391,12 +403,16 @@ module.exports = {
             
              console.log("adding a track from the night seed!");
              selectedTracks.push(track.uri);
-           }
+            }
 
-            else if(count % 100 === 0){
+            else if(count % 75 === 0){
               console.log("adding a track from night seed!\n")
               selectedTracks.push(track.uri);
             }
+          }
+          else if(count % 100 === 0){
+            console.log("adding a track from night seed!\n")
+            selectedTracks.push(track.uri);
           }
         }
       }
@@ -432,10 +448,14 @@ module.exports = {
                   selectedTracks.push(track.uri);
                 }
 
-                else if(count % 100 === 0){
+                else if(count % 50 === 0){
                 console.log("adding a track from snow seed!\n")
                 selectedTracks.push(track.uri);
                 }
+              }
+              else if(count % 100 === 0){
+               console.log("adding a track from snow seed!\n")
+               selectedTracks.push(track.uri);
               }
             }
           }
@@ -476,6 +496,14 @@ module.exports = {
                   selectedTracks.push(track.uri);
                 }
               }
+              else if(count % 50 === 0){
+                console.log("adding a track from cloud seed!\n")
+                selectedTracks.push(track.uri);
+              }
+            }
+            else if(count % 50 === 0){
+              console.log("adding a track from cloud seed!\n")
+              selectedTracks.push(track.uri);
             }
           }
       }
