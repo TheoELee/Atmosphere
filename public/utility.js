@@ -86,15 +86,15 @@ module.exports = {
   },
 
 	weatherCard: function (parsedWeather) {
-		if (parsedWeather.rain > 0) {
+		if (parsedWeather.weatherData[5].rain > 0) {
       return "rain";
-    } else if (parsedWeather.snow > 0) {
+    } else if (parsedWeather.weatherData[6].snow > 0) {
       return "snow";
-    } else if (parsedWeather.wind) {
+    } else if (parsedWeather.weatherData[2].wind > 10) {
       return "wind";
-    } else if (parsedWeather.clouds > parsedWeather.sun) {
+    } else if (parsedWeather.weatherData[3].clouds > parsedWeather.weatherData[4].sun) {
       return "cloud";
-    } else if (parsedWeather.sun > parsedWeather.clouds) {
+    } else if (parsedWeather.weatherData[4].sun > parsedWeather.weatherData[3].clouds) {
       return "sun";
     } else {
       return "night";
@@ -438,13 +438,13 @@ module.exports = {
       //The more cloud and the higher the temp, the higher the attributes
       else if(weatherCard === 'cloud'){
         let valenceLower = 0.0;
-        let valenceUpper = valenceLower + normalizedWeather.cloud + widenFrac1;
+        let valenceUpper = valenceLower + normalizedWeather.clouds + widenFrac1;
         let tempoLower = 50;
         let tempoUpper = tempoLower + normalizedWeather.tempo + widenNum1;
         let energyLower = 0;
-        let energyUpper = energyLower + normalizedWeather.cloud + widenFrac1;
+        let energyUpper = energyLower + normalizedWeather.clouds + widenFrac1;
         let instruLower = 0.2 - widenFrac2;
-        let instruUpper = instruLower + normalizedWeather.cloud + widenFrac1;
+        let instruUpper = instruLower + normalizedWeather.clouds + widenFrac1;
 
         //widen search params based on number of comparisons
         ++count;
