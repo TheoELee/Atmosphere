@@ -1,6 +1,5 @@
 const axios = require("axios");
 const weatherKey = "e6d97c1a8a16bef9b8326ebac5e9d4ba"; //Free API key for Openweather
-// const urlLocation = "http://ip-api.com/json/"; //URL for ip-api (ip location api)
 
 let normalizedWeather = {
   temp: 0.0,
@@ -13,6 +12,7 @@ let normalizedWeather = {
 
 module.exports = {
   getZip: async function (ip_address) {
+    //const urlLocation = "http://ip-api.com/json/"; //URL for ip-api (ip location api)
     const urlLocation = `http://ip-api.com/json/${ip_address}`; //URL for ip-api (ip location api)
 
     let response = await axios.get(urlLocation);
@@ -253,8 +253,8 @@ module.exports = {
   selectTracks: async function (tracks, accessToken, weatherCard) {
     const selectedTracks = []
     this.shuffle(tracks);
-
     let count = 0;
+
     for await (track of tracks) {
 
       if (selectedTracks.length > 6) {
@@ -274,12 +274,8 @@ module.exports = {
         return selectedTracks;
       })
 
-      //console.log("compared songs " + count);
-
       //sun: high valence, mid-high tempo, high danceability
       //As the sun percentage and temperature increases the tempo, valence, and danceability increases 
-
-      //SUN CARD
       if(weatherCard === 'sun'){
           //values increase based on the amount of sun
           let valenceLower = 0.5;
@@ -396,6 +392,11 @@ module.exports = {
              console.log("adding a track from the night seed!");
              selectedTracks.push(track.uri);
            }
+
+            else if(count % 100 === 0){
+              console.log("adding a track from night seed!\n")
+              selectedTracks.push(track.uri);
+            }
           }
         }
       }
@@ -429,6 +430,11 @@ module.exports = {
 
                   console.log("adding a track from snow seed!\n")
                   selectedTracks.push(track.uri);
+                }
+
+                else if(count % 100 === 0){
+                console.log("adding a track from snow seed!\n")
+                selectedTracks.push(track.uri);
                 }
               }
             }
