@@ -440,7 +440,7 @@ module.exports = {
                 }
 
                 else if(count % 100 === 0){
-                console.log("adding a track from night seed!\n")
+                console.log("adding a track from snow seed!\n")
                 selectedTracks.push(track.uri);
                 }
               }
