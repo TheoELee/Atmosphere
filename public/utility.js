@@ -12,8 +12,8 @@ let normalizedWeather = {
 
 module.exports = {
   getZip: async function (ip_address) {
-    //const urlLocation = "http://ip-api.com/json/"; //URL for ip-api (ip location api)
-    const urlLocation = `http://ip-api.com/json/${ip_address}`; //URL for ip-api (ip location api)
+    const urlLocation = "http://ip-api.com/json/"; //URL for ip-api (ip location api)
+    //const urlLocation = `http://ip-api.com/json/${ip_address}`; //URL for ip-api (ip location api)
 
     let response = await axios.get(urlLocation);
     console.log("the response from axios is: " +response.data.zip);
@@ -23,6 +23,7 @@ module.exports = {
   getWeather: async function (zipCode){
    const urlWeather = `http://api.openweathermap.org/data/2.5/weather?zip=${zipCode},&appid=${weatherKey}`;
    let response = await axios.get(urlWeather);
+   console.log(response);
    return response.data;
   },
 
@@ -50,18 +51,18 @@ module.exports = {
 
         //Needs testing
         //Rain measure in milimeters over 3 hour period
-        let rain = 0;
+        let rain = 0.0;
         if (data.rain) {
-          if (data.rain["1h"]) {
-            rain = data.rain["1h"]
+          if (data.rain["3h"]) {
+            rain = data.rain["3h"]
           } else {
-            rain = data.rain["3h"];
+            rain = data.rain["1h"];
           }
         }
 
         //Needs testing
         //Snow measure in milimeters over 3 hour period
-        let snow = 0;
+        let snow = 0.0;
         if (data.snow) {
           if (data.snow["1h"]) {
             rain = data.snow["1h"]
@@ -82,6 +83,7 @@ module.exports = {
         `{"snow": "${snow}"}]}`;
 
         weatherData = JSON.parse(text);
+        console.log(weatherData);
         return weatherData;
   },
 
@@ -270,7 +272,7 @@ module.exports = {
           authorization: `Bearer ${accessToken}`
         }
       }).catch(e => {
-        console.log(e);
+        //console.log(e);
         return selectedTracks;
       })
 
