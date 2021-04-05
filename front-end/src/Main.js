@@ -2,6 +2,7 @@ import Snow from "./Snow";
 import Rain from "./Rain";
 import Wind from "./Wind";
 import Sun from "./Sun";
+import Cloud from "./Cloud";
 import Night from "./Night";
 import Player from "./Player";
 import Playlist from "./Playlist";
@@ -23,14 +24,19 @@ class Main extends Component {
 		  playlistUri: props.playlistUri,
 		  temp: props.temp,
 		  weatherCard: props.weatherCard,
-		  zipCode: props.zipCode
+		  zipCode: props.zipCode,
+		  currentHour: props.currentHour
 	  }
 	}
 	
 	getWeatherCard() {
-		const { weatherCard, temp } = this.state;
+		const { weatherCard, temp, currentHour } = this.state;
 
-		if (weatherCard === "wind") {
+		if(currentHour > 19 || currentHour < 4){
+			return <Night temp = {temp}/>;
+		}
+
+		else if (weatherCard === "wind") {
 			return <Wind temp={temp}/>;
 		} else if (weatherCard === "sun") {
 			return <Sun temp={temp}/>
@@ -39,8 +45,8 @@ class Main extends Component {
 		} else if (weatherCard === "rain") {
 			return <Rain temp={temp}/>;
 		}
-		else if(weatherCard === "night"){
-			return <Night temp = {temp}/>;
+		else if(weatherCard === "cloud"){
+			return <Cloud temp = {temp}/>;
 		}
 	}
 

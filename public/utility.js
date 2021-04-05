@@ -1,6 +1,5 @@
 const axios = require("axios");
 const weatherKey = "e6d97c1a8a16bef9b8326ebac5e9d4ba"; //Free API key for Openweather
-const urlLocation = "http://ip-api.com/json/"; //URL for ip-api (ip location api)
 
 let normalizedWeather = {
   temp: 0.0,
@@ -12,9 +11,12 @@ let normalizedWeather = {
 }
 
 module.exports = {
-  getZip: async function () {
+  getZip: async function (ip_address) {
+    //const urlLocation = "http://ip-api.com/json/"; //URL for ip-api (ip location api)
+    const urlLocation = `http://ip-api.com/json/${ip_address}`; //URL for ip-api (ip location api)
+
     let response = await axios.get(urlLocation);
-    //console.log("the response from axios is: " +response.data.zip);
+    console.log("the response from axios is: " +response.data.zip);
     return response.data.zip;
   },
 
@@ -47,21 +49,26 @@ module.exports = {
         }
 
         //Needs testing
-        //Snow measure in milimeters over 3 hour period
+        //Rain measure in milimeters over 3 hour period
         let rain = 0;
         if (data.rain) {
-          if (data.rain["3h"]) {
-            rain = data.rain["3h"]
+          if (data.rain["1h"]) {
+            rain = data.rain["1h"]
           } else {
-            rain = data.rain["1h"];
+            rain = data.rain["3h"];
           }
         }
 
         //Needs testing
         //Snow measure in milimeters over 3 hour period
         let snow = 0;
-        if (data.snow)
-          snow = data.snow["3h"];
+        if (data.snow) {
+          if (data.snow["1h"]) {
+            rain = data.snow["1h"]
+          } else {
+            rain = data.snow["3h"];
+          }
+        }
 
         this.normalizeWeatherData(fTemp, wind, clouds, sun, rain, snow);
 
@@ -78,27 +85,20 @@ module.exports = {
         return weatherData;
   },
 
-  getTime: function(){
-    //get time for night card
-      var hour = new Date();
-      return hour.getHours();
-  },
-
-	weatherCard: function (parsedWeather, hour) {
-		if (parsedWeather.rain > 0) 
+	weatherCard: function (parsedWeather) {
+		if (parsedWeather.weatherData[5].rain > 0) {
       return "rain";
-		else if (parsedWeather.snow > 0) 
+    } else if (parsedWeather.weatherData[6].snow > 0) {
       return "snow";
-		else if (parsedWeather.wind) 
+    } else if (parsedWeather.weatherData[2].wind > 10) {
       return "wind";
-		else if (parsedWeather.clouds > parsedWeather.sun) 
+    } else if (parsedWeather.weatherData[3].clouds > parsedWeather.weatherData[4].sun) {
       return "cloud";
-    else if(hour > 18){
+    } else if (parsedWeather.weatherData[4].sun > parsedWeather.weatherData[3].clouds) {
+      return "sun";
+    } else {
       return "night";
     }
-		else 
-      return "sun";
-
 	},
 
   // Creates a playlist in users Spotify account
@@ -253,8 +253,8 @@ module.exports = {
   selectTracks: async function (tracks, accessToken, weatherCard) {
     const selectedTracks = []
     this.shuffle(tracks);
-
     let count = 0;
+
     for await (track of tracks) {
 
       if (selectedTracks.length > 6) {
@@ -273,8 +273,6 @@ module.exports = {
         console.log(e);
         return selectedTracks;
       })
-
-      console.log("compared songs " + count);
 
       //sun: high valence, mid-high tempo, high danceability
       //As the sun percentage and temperature increases the tempo, valence, and danceability increases 
@@ -308,6 +306,7 @@ module.exports = {
 
       //rain: low-mid valence, low-mid tempo, mid-high acoustic
      //The more rain and the higher the temp, the higher the attributes
+     //RAIN
       else if(weatherCard === 'rain'){
         let valenceLower = 0.0;
         let valenceUpper = valenceLower + normalizedWeather.sun + widenFrac1;
@@ -337,6 +336,7 @@ module.exports = {
 
       //windy => high tempo, mid-high valence, mid-high danceability
      //The more wind and the higher the temp, the higher the attributes
+     //WIND
       else if(weatherCard === 'wind'){
         let valenceLower = 0.5;
         let valenceUpper = valenceLower + normalizedWeather.sun + widenFrac1;
@@ -366,20 +366,21 @@ module.exports = {
 
       //night: low tempo, low energy, mid-high instrumentalness
       //Higher temps and less clouds = higher values
+      //if no favorite artists in spotify, generates random slow instrumental songs (e.g., 528 Hz Release Inner Conflict & Struggle)
       else if(weatherCard === 'night'){
         let tempoLower = 50 + widenNum1;
         let tempoUpper = tempoLower + normalizedWeather.tempo + widenNum1;
         let energyLower = 0;
         let energyUpper = energyLower + normalizedWeather.sun + widenFrac1;
         //the closer to 1 the more likely songs contain only instruments
-        let instruLower = 0.3;
+        let instruLower = 0.3 - widenFrac1;
         let instruUpper = instruLower + normalizedWeather.sun + widenFrac1;
 
         //widen search params based on number of comparisons
         ++count;
         if(count % 10 === 0){
-          widenFrac1 = widenFrac1 + 0.05;
-          widenNum1 = widenNum1 + 2;
+          widenFrac1 = widenFrac1 + 0.07;
+          widenNum1 = widenNum1 + 5;
         }
 
         if(audioFeatures && audioFeatures.data && audioFeatures.data.tempo && audioFeatures.data.tempo > tempoLower && audioFeatures.data.tempo < tempoUpper){
@@ -387,10 +388,15 @@ module.exports = {
           if(audioFeatures && audioFeatures.data && audioFeatures.data.energy && audioFeatures.data.energy > energyLower && audioFeatures.data.energy < energyUpper){
 
             if(audioFeatures && audioFeatures.data && audioFeatures.data.instrumentalness && audioFeatures.data.instrumentalness > instruLower && audioFeatures.data.instrumentalness < instruUpper){
-
-             console.log("adding a track!");
+            
+             console.log("adding a track from the night seed!");
              selectedTracks.push(track.uri);
            }
+
+            else if(count % 100 === 0){
+              console.log("adding a track from night seed!\n")
+              selectedTracks.push(track.uri);
+            }
           }
         }
       }
@@ -425,28 +431,35 @@ module.exports = {
                   console.log("adding a track from snow seed!\n")
                   selectedTracks.push(track.uri);
                 }
+
+                else if(count % 100 === 0){
+                console.log("adding a track from snow seed!\n")
+                selectedTracks.push(track.uri);
+                }
               }
             }
           }
       }
-
+      //cloud: low-mid tempo, low valence, low energy, low instrumental
+      //The more cloud and the higher the temp, the higher the attributes
       else if(weatherCard === 'cloud'){
         let valenceLower = 0.0;
-        let valenceUpper = valenceLower + normalizedWeather.cloud + widenFrac1;
+        let valenceUpper = valenceLower + normalizedWeather.clouds + widenFrac1;
         let tempoLower = 50;
         let tempoUpper = tempoLower + normalizedWeather.tempo + widenNum1;
         let energyLower = 0;
-        let energyUpper = energyLower + normalizedWeather.cloud + widenFrac1;
-        let instruLower = 0.2 - widenFrac1;
-        let instruUpper = instruLower + normalizedWeather.cloud + widenFrac1;
+        let energyUpper = energyLower + normalizedWeather.clouds + widenFrac1;
+        let instruLower = 0.2 - widenFrac2;
+        let instruUpper = instruLower + normalizedWeather.clouds + widenFrac1;
 
         //widen search params based on number of comparisons
         ++count;
-        if(count % 20 === 0){
+        if(count % 5 === 0){
           widenFrac1 = widenFrac1 + 0.08;
-          widenNum1 = widenNum1 + 2;
+          if(instruLower > 0)
+            widenFrac2 = widenFrac2 - 0.05;
+          widenNum1 = widenNum1 + 3;
         }
-
           if(audioFeatures && audioFeatures.data && audioFeatures.data.tempo && audioFeatures.data.tempo > tempoLower && audioFeatures.data.tempo < tempoUpper){
 
             if(audioFeatures && audioFeatures.data && audioFeatures.data.valence && audioFeatures.data.valence > valenceLower && audioFeatures.data.valence < valenceUpper){
@@ -456,8 +469,13 @@ module.exports = {
                 if(audioFeatures && audioFeatures.data && audioFeatures.data.instrumentalness && audioFeatures.data.instrumentalness > instruLower && audioFeatures.data.instrumentalness < instruUpper){
                   console.log("adding a track from cloud seed!\n")
                   selectedTracks.push(track.uri);
-                  }
                 }
+
+                else if(count % 25 === 0){
+                  console.log("adding a track from cloud seed!\n")
+                  selectedTracks.push(track.uri);
+                }
+              }
             }
           }
       }

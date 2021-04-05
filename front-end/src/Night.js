@@ -28,7 +28,7 @@ var settings = {
 	cloudArch: 50,
 };
 
-class Sun extends Component {
+class Night extends Component {
 	constructor(props) {
         super(props);
         
@@ -202,4 +202,4 @@ class Sun extends Component {
 	}
 }
 
-export default Sun;
+export default Night;

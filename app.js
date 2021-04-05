@@ -5,14 +5,13 @@ var cors = require('cors');
 var cookieParser = require('cookie-parser');
 
 var app = express();
-var clientPath = path.join(__dirname + '/../front-end/build/');
+var clientPath = path.join(__dirname + '/front-end/build/');
 
 // Routes
 var indexRouter = require('./routes/index');
 var loginRouter = require('./routes/login');
 var callbackRouter = require('./routes/callback');
 var mainRouter = require('./routes/main');
-console.log("\nhttp://localhost:8888\n");
 
 app.use(express.json())
    .use(express.urlencoded({ extended: false }))

@@ -20,7 +20,14 @@ function getHashParams() {
   return hashParams;
 }
 
+function getTime(){
+  //get time for night card
+  const hour = new Date();
+  return hour.getHours();
+}
+
 const params = getHashParams();
+const hour = getTime();
 
 ReactDOM.render(
   <Router>
@@ -29,7 +36,7 @@ ReactDOM.render(
         <Login />
       </Route>
       <Route path="/main">
-        <Main authToken={params.authToken} displayName={params.displayName} playlistUri={params.playlistUri} temp={params.temp} weatherCard={params.weatherCard} zipCode={params.zipCode}/>
+        <Main authToken={params.authToken} displayName={params.displayName} playlistUri={params.playlistUri} temp={params.temp} weatherCard={params.weatherCard} zipCode={params.zipCode} currentHour={hour}/>
       </Route>
     </div>
   </Router>,
